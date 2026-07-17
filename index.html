@@ -8,14 +8,13 @@
   <style>
     :root {
       --bg: #f2f3f5;
-      --panel: #ffffff;
-      --text: #222222;
+      --white: #ffffff;
+      --text: #000000;
       --muted: #818c99;
-      --line: #dce1e6;
-      --line-strong: #c5ccd3;
+      --line: #e1e3e6;
       --blue: #4986cc;
-      --blue-soft: #e8f1fa;
-      --shadow: 0 10px 28px rgba(20, 30, 45, .1);
+      --blue-light: #6fa3dc;
+      --blue-pill: rgba(255, 255, 255, .22);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
     }
@@ -25,158 +24,115 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 18px;
-      background: #d8dee6;
+      padding: 0;
+      background: var(--bg);
       user-select: none;
     }
     .app {
       position: relative;
-      width: min(100%, 400px);
-      height: min(860px, calc(100vh - 36px));
-      min-height: 640px;
+      width: min(100%, 390px);
+      height: 100vh;
+      max-height: 844px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border-radius: 24px;
-      background: var(--panel);
-      box-shadow: 0 24px 60px rgba(20, 30, 45, .2);
-    }
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 18px 8px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: linear-gradient(145deg, #5aa0e8, #3b79c4);
-      color: #fff;
-      box-shadow: 0 8px 16px rgba(73, 134, 204, .28);
-    }
-    .brand-mark svg { width: 22px; height: 22px; }
-    .brand-text { min-width: 0; }
-    .brand-text strong {
-      display: block;
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: -.2px;
-    }
-    .brand-text span {
-      display: block;
-      overflow: hidden;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      background: var(--white);
     }
     .balance-block {
-      padding: 10px 20px 6px;
+      padding: 28px 20px 10px;
       text-align: center;
     }
     .account-label {
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .6px;
       text-transform: uppercase;
     }
     .balance-row {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 8px;
     }
     .balance {
-      color: #111;
-      font-size: 42px;
-      font-weight: 800;
-      letter-spacing: -.8px;
+      color: var(--text);
+      font-size: 44px;
+      font-weight: 500;
+      letter-spacing: -.5px;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
-    .tg-badge {
+    .coin-badge {
       display: grid;
       place-items: center;
       width: 30px;
       height: 30px;
+      border: 2.5px solid #2c2f33;
       border-radius: 50%;
-      background: linear-gradient(145deg, #2b2f36, #111418);
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .18);
+      background: var(--white);
+      color: #2c2f33;
     }
-    .tg-badge svg { width: 15px; height: 15px; }
+    .coin-badge svg { width: 15px; height: 15px; }
     .meta-row {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px 10px;
+      gap: 8px;
       margin-top: 10px;
       color: var(--muted);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .energy-track {
-      width: 92px;
-      height: 7px;
+      width: 80px;
+      height: 5px;
       overflow: hidden;
       border-radius: 99px;
-      background: #e1e5ea;
+      background: #e8eaed;
     }
     .energy-fill {
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #6db3f2, #4986cc);
+      background: var(--blue);
       transition: width .12s linear;
     }
     .actions {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      padding: 14px 16px 4px;
+      padding: 16px 16px 8px;
     }
     .action {
-      display: grid;
-      place-items: center;
-      gap: 9px;
-      min-height: 96px;
-      padding: 14px 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      aspect-ratio: 1;
       border: 0;
-      border-radius: 18px;
+      border-radius: 16px;
       color: #fff;
       cursor: pointer;
       font: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, .14);
-      transition: transform .12s ease;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform .1s ease;
     }
-    .action:active { transform: scale(.97); }
-    .action .icon {
-      display: grid;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, .2);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
+    .action:active { transform: scale(.96); }
+    .action svg {
+      width: 32px;
+      height: 32px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    .action svg { width: 24px; height: 24px; fill: #fff; }
-    .action.top { background: linear-gradient(160deg, #ffb36a 0%, #ff7a45 55%, #ff5c3a 100%); }
-    .action.transfer { background: linear-gradient(160deg, #a978ff 0%, #7b4dff 55%, #5f35e8 100%); }
-    .action.shop { background: linear-gradient(160deg, #ff7fc4 0%, #f24aa4 55%, #e2318f 100%); }
+    .action.top { background: linear-gradient(145deg, #ffb347, #ff7a45); }
+    .action.transfer { background: linear-gradient(145deg, #9b6dff, #6b3fd4); }
+    .action.shop { background: linear-gradient(145deg, #ff6eb4, #e83296); }
     .home {
       flex: 1;
       min-height: 0;
@@ -184,399 +140,416 @@
       flex-direction: column;
     }
     .section-title {
-      margin: 14px 18px 10px;
+      margin: 12px 18px 10px;
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .7px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .5px;
       text-transform: uppercase;
     }
     .auto-list {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      padding: 0 16px 8px;
+      padding: 0 16px 10px;
       scrollbar-width: none;
     }
     .auto-list::-webkit-scrollbar { display: none; }
     .mini-card {
-      flex: 0 0 172px;
+      flex: 0 0 155px;
       display: grid;
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: 48px 1fr;
       align-items: center;
       gap: 10px;
-      padding: 12px;
-      border: 2px solid var(--line);
-      border-radius: 16px;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .03);
+      padding: 10px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: var(--white);
     }
     .mini-icon {
+      position: relative;
       display: grid;
       place-items: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: currentColor;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, .08);
+      width: 46px;
+      height: 46px;
+      border: 2px solid currentColor;
+      border-radius: 10px;
+      background: var(--white);
     }
-    .mini-icon svg { width: 22px; height: 22px; fill: #fff; }
+    .mini-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mini-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      padding: 1px 5px;
+      border-radius: 6px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+    }
     .mini-card b {
       display: block;
       overflow: hidden;
-      color: #2f3640;
-      font-size: 13px;
-      font-weight: 700;
+      color: #2c2f33;
+      font-size: 14px;
+      font-weight: 600;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .mini-card span {
       display: block;
-      margin-top: 3px;
+      margin-top: 2px;
       color: var(--muted);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .coin-zone {
       position: relative;
       flex: 1;
-      display: grid;
-      place-items: start center;
-      padding-top: 12px;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(73, 134, 204, .1), transparent 45%),
-        linear-gradient(#fff 0%, #f5f8fc 100%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 24px;
+      background: var(--white);
     }
-    .online {
-      position: absolute;
-      top: 28px;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .2);
-      color: rgba(255, 255, 255, .96);
-      font-size: 12px;
-      font-weight: 700;
-      pointer-events: none;
-    }
-    .online svg { width: 14px; height: 14px; fill: currentColor; }
     .coin-wrap {
       position: relative;
       display: grid;
       place-items: center;
-      width: 300px;
-      height: 300px;
-      margin-top: 8px;
+      width: min(100%, 320px);
+      height: min(100%, 320px);
+      max-width: 300px;
+      max-height: 300px;
     }
     .coin {
       position: relative;
-      width: 252px;
-      height: 252px;
+      width: 100%;
+      height: 100%;
       border: 0;
       border-radius: 50%;
       cursor: pointer;
-      background: radial-gradient(circle at 35% 28%, #7eb6f5 0%, #5a97de 38%, #4986cc 70%, #3a74b8 100%);
-      box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, .35),
-        inset 0 -10px 18px rgba(24, 74, 140, .28),
-        0 14px 0 #376fac,
-        0 22px 28px rgba(55, 111, 172, .28);
-      transition: transform .1s ease, filter .1s ease, box-shadow .1s ease;
+      background: var(--blue);
+      box-shadow: 0 8px 24px rgba(73, 134, 204, .35);
+      transition: transform .1s ease, box-shadow .1s ease;
     }
-    .coin::before {
+    .coin::after {
       content: "";
       position: absolute;
-      inset: 18px;
-      border: 3px solid rgba(255, 255, 255, .18);
+      inset: 0;
       border-radius: 50%;
+      background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.18) 0%, transparent 55%);
+      pointer-events: none;
     }
-    .coin-logo {
-      position: relative;
-      z-index: 1;
+    .online {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      z-index: 2;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      color: rgba(232, 243, 255, .98);
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -.4px;
-      text-shadow: 0 2px 0 rgba(28, 74, 140, .35);
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: var(--blue-pill);
+      color: rgba(255, 255, 255, .92);
+      font-size: 12px;
+      font-weight: 600;
+      transform: translateX(-50%);
+      pointer-events: none;
+      white-space: nowrap;
     }
-    .coin-logo .mark {
+    .online svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .pay-logo {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .pay-mark {
       display: grid;
       place-items: center;
       width: 36px;
       height: 36px;
+      border: 2px solid rgba(255, 255, 255, .75);
       border-radius: 50%;
-      background: rgba(255, 255, 255, .16);
-      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .55);
+      color: rgba(255, 255, 255, .9);
     }
-    .coin-logo .mark svg { width: 18px; height: 18px; fill: currentColor; }
+    .pay-mark svg { width: 18px; height: 18px; fill: currentColor; }
+    .pay-text {
+      color: rgba(200, 225, 255, .95);
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -.5px;
+      text-transform: lowercase;
+    }
     .coin:active, .coin.pressed {
-      transform: scale(.92) translateY(4px);
-      box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, .35),
-        inset 0 -8px 14px rgba(24, 74, 140, .28),
-        0 8px 0 #376fac,
-        0 12px 18px rgba(55, 111, 172, .25);
+      transform: scale(.94);
+      box-shadow: 0 4px 16px rgba(73, 134, 204, .3);
     }
-    .coin.empty { animation: empty .28s linear; }
-    @keyframes empty {
-      25%, 75% { filter: saturate(1.4) hue-rotate(-20deg); transform: translateX(-4px); }
-      50% { transform: translateX(4px); }
+    .coin.empty { animation: shake .3s ease; }
+    @keyframes shake {
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
     }
     .float {
       position: absolute;
       z-index: 3;
       pointer-events: none;
-      color: #4986cc;
-      font-size: 24px;
-      font-weight: 800;
-      text-shadow: 0 2px 0 #fff;
+      color: var(--blue);
+      font-size: 22px;
+      font-weight: 700;
       animation: rise .8s ease-out forwards;
     }
     @keyframes rise {
-      from { opacity: 1; transform: translate(-50%, 0) scale(.92); }
-      to { opacity: 0; transform: translate(-50%, -78px) scale(1.1); }
+      from { opacity: 1; transform: translate(-50%, 0); }
+      to { opacity: 0; transform: translate(-50%, -70px); }
     }
-    .sheet {
+    .overlay {
       position: absolute;
       inset: 0;
-      z-index: 10;
+      z-index: 20;
       display: none;
       align-items: flex-end;
-      background: rgba(0, 0, 0, .35);
+      background: rgba(0, 0, 0, .4);
     }
-    .sheet.open { display: flex; }
-    .sheet-card {
+    .overlay.open { display: flex; }
+    .sheet {
       width: 100%;
-      max-height: 80%;
+      max-height: 85%;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border-radius: 22px 22px 0 0;
-      background: #fff;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, .16);
-      animation: slideUp .22s ease-out;
+      border-radius: 16px 16px 0 0;
+      background: var(--white);
+      animation: slideUp .2s ease-out;
     }
     @keyframes slideUp {
-      from { transform: translateY(24px); opacity: .7; }
-      to { transform: translateY(0); opacity: 1; }
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
     }
     .sheet-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 18px 12px;
-      border-bottom: 2px solid #eef1f4;
+      padding: 16px 18px;
     }
     .sheet-head h2 {
       margin: 0;
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 20px;
+      font-weight: 700;
     }
     .sheet-close {
       display: grid;
       place-items: center;
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       border: 0;
       border-radius: 50%;
       background: #ebedf0;
-      color: #667482;
+      color: #818c99;
       cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
     }
-    .sheet-close svg { width: 14px; height: 14px; fill: currentColor; }
     .sheet-body {
       overflow-y: auto;
-      padding: 8px 16px 24px;
+      padding: 0 16px 28px;
     }
     .upgrade {
       display: grid;
-      grid-template-columns: 54px 1fr auto;
-      align-items: center;
+      grid-template-columns: 56px 1fr;
       gap: 12px;
       padding: 14px 0;
-      border-bottom: 2px solid #eef1f4;
+      border-bottom: 1px solid var(--line);
     }
     .upgrade:last-child { border-bottom: 0; }
     .upgrade-icon {
       display: grid;
       place-items: center;
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      background: currentColor;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, .1);
+      width: 56px;
+      height: 56px;
+      border: 2px solid currentColor;
+      border-radius: 12px;
+      background: var(--white);
     }
-    .upgrade-icon svg { width: 26px; height: 26px; fill: #fff; }
-    .upgrade h3 {
-      margin: 0 0 4px;
-      color: #2c333a;
-      font-size: 15px;
-      font-weight: 700;
+    .upgrade-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    .upgrade .yield {
+    .upgrade-info { min-width: 0; }
+    .upgrade-title {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .upgrade-title h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .upgrade-title .yield {
       color: var(--blue);
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .upgrade p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
+      font-size: 14px;
+      font-weight: 600;
     }
     .buy {
-      min-width: 118px;
-      padding: 11px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
       border: 0;
-      border-radius: 18px;
+      border-radius: 20px;
       background: var(--blue);
       color: #fff;
       cursor: pointer;
       font: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 4px 10px rgba(73, 134, 204, .25);
-      transition: background .15s, transform .15s;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background .15s, transform .1s;
     }
-    .buy:active { transform: scale(.96); }
-    .buy:disabled { background: #c5ccd4; box-shadow: none; cursor: not-allowed; }
-    .buy.success { background: #4bb36a; }
+    .buy:active { transform: scale(.97); }
+    .buy:disabled { background: #c5ccd4; cursor: not-allowed; }
+    .buy.success { background: #4caf50; }
+    .buy .coin-badge {
+      width: 18px;
+      height: 18px;
+      border-width: 1.5px;
+    }
+    .buy .coin-badge svg { width: 10px; height: 10px; }
     .panel-note {
-      margin: 0 0 12px;
+      margin: 0 0 14px;
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-    .profile-card, .transfer-form, .rating-list {
-      border: 2px solid var(--line);
-      border-radius: 16px;
-      background: #fff;
+      font-size: 14px;
+      line-height: 1.4;
     }
     .profile-card {
-      padding: 16px;
-      margin-bottom: 12px;
-      background: linear-gradient(160deg, #eef5fc, #fff);
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #f7f8fa;
     }
-    .profile-name { font-size: 20px; font-weight: 800; }
-    .profile-id { margin-top: 6px; color: var(--blue); font-size: 13px; font-weight: 700; }
-    .transfer-form { display: grid; gap: 12px; padding: 14px; }
-    label { color: #667482; font-size: 12px; font-weight: 700; }
+    .profile-name { font-size: 18px; font-weight: 700; }
+    .profile-id { margin-top: 4px; color: var(--blue); font-size: 13px; font-weight: 600; }
+    .transfer-form { display: grid; gap: 12px; }
+    label { color: var(--muted); font-size: 13px; font-weight: 600; }
     input {
       width: 100%;
       margin-top: 6px;
       padding: 12px 14px;
-      border: 2px solid var(--line-strong);
-      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
       outline: none;
       color: var(--text);
       font: inherit;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
     }
     input:focus { border-color: var(--blue); }
     .primary {
-      padding: 13px;
+      padding: 14px;
       border: 0;
-      border-radius: 14px;
+      border-radius: 12px;
       background: var(--blue);
       color: #fff;
       cursor: pointer;
       font: inherit;
-      font-size: 15px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 600;
     }
-    .transfer-message { min-height: 18px; color: var(--blue); font-size: 12px; font-weight: 700; }
+    .transfer-message { min-height: 18px; color: var(--blue); font-size: 13px; font-weight: 600; }
     .rating-row {
       display: grid;
-      grid-template-columns: 36px 1fr auto;
+      grid-template-columns: 32px 1fr auto;
       align-items: center;
       gap: 10px;
-      padding: 14px;
-      border-bottom: 2px solid #eef1f4;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
     }
     .rating-row:last-child { border-bottom: 0; }
-    .rating-row.you { background: var(--blue-soft); }
-    .rank { color: var(--blue); font-size: 16px; font-weight: 800; }
-    .rating-row b { font-size: 14px; }
-    .rating-row span { color: #667482; font-size: 13px; font-weight: 700; }
+    .rating-row.you { background: #eef4fb; margin: 0 -16px; padding: 12px 16px; }
+    .rank { color: var(--blue); font-size: 15px; font-weight: 700; }
+    .rating-row b { font-size: 15px; font-weight: 600; }
+    .rating-row span { color: var(--muted); font-size: 14px; font-weight: 600; }
     .modal {
       position: absolute;
       inset: 0;
       z-index: 30;
       display: grid;
       place-items: center;
-      padding: 22px;
-      background: rgba(20, 30, 45, .48);
+      padding: 24px;
+      background: rgba(0, 0, 0, .45);
     }
     .modal[hidden] { display: none; }
     .modal-card {
       width: min(100%, 340px);
-      padding: 24px 22px;
-      border-radius: 20px;
-      background: #fff;
-      box-shadow: var(--shadow);
+      padding: 24px;
+      border-radius: 16px;
+      background: var(--white);
     }
     .modal-card h1 {
-      margin: 0;
+      margin: 0 0 8px;
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 700;
     }
-    .modal-card p { color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .modal-card p { margin: 0 0 16px; color: var(--muted); font-size: 14px; line-height: 1.45; }
     .modal-id {
-      margin: 14px 0;
+      margin-bottom: 16px;
       padding: 12px;
-      border: 2.5px dashed #8eb5de;
-      border-radius: 12px;
+      border: 2px dashed #a8c4e8;
+      border-radius: 10px;
       color: var(--blue);
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 15px;
+      font-weight: 700;
       text-align: center;
     }
-    .color-orange { color: #ff7a3d; }
-    .color-green { color: #35b36d; }
-    .color-blue { color: #4986cc; }
-    .color-pink { color: #e84f9a; }
-    @media (max-width: 480px) {
-      body { display: block; padding: 0; background: #fff; }
-      .app {
-        width: 100%;
-        height: 100vh;
-        min-height: 100vh;
-        border-radius: 0;
-        box-shadow: none;
-      }
+    .c-orange { color: #f5a623; }
+    .c-green { color: #4caf50; }
+    .c-blue { color: #4986cc; }
+    .c-pink { color: #e91e8c; }
+    .c-purple { color: #7b4dff; }
+    @media (min-width: 481px) {
+      body { padding: 18px; }
+      .app { height: min(844px, calc(100vh - 36px)); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,.12); }
     }
   </style>
 </head>
 <body>
-  <section class="app" aria-label="Игра TG Coin">
-    <header class="app-header">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3zm-3.2 2.1-8.9 7.2-.4 3.2-1.5-4.7 10.8-5.7z"/></svg>
-        </span>
-        <div class="brand-text">
-          <strong>TG Coin</strong>
-          <span id="headerPlayer">Добро пожаловать</span>
-        </div>
-      </div>
-    </header>
-
+  <section class="app" aria-label="TG Coin">
     <div class="balance-block">
       <div class="account-label">Ваш счёт</div>
       <div class="balance-row">
         <div class="balance" id="balance">0</div>
-        <span class="tg-badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3zm-3.2 2.1-8.9 7.2-.4 3.2-1.5-4.7 10.8-5.7z"/></svg>
+        <span class="coin-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg>
         </span>
       </div>
       <div class="meta-row">
@@ -588,22 +561,16 @@
     </div>
 
     <div class="actions">
-      <button class="action top" type="button" data-sheet="rating">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 2.8l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 16.7 6.6 19.6l1-6.1L3.2 9.2l6.1-.9L12 2.8z"/></svg>
-        </span>
+      <button class="action top" type="button" data-sheet="rating" aria-label="Топ">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
         Топ
       </button>
-      <button class="action transfer" type="button" data-sheet="transfer">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9zm2.2 1.2v1.8h11.6V8.7H6.2zm8.8 5.3a1.1 1.1 0 1 0 0 2.2h1.8a1.1 1.1 0 1 0 0-2.2h-1.8z"/></svg>
-        </span>
+      <button class="action transfer" type="button" data-sheet="transfer" aria-label="Перевести">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="14" y1="15" x2="18" y2="15"/></svg>
         Перевести
       </button>
-      <button class="action shop" type="button" data-sheet="shop">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M8.2 7.2V6.5a3.8 3.8 0 0 1 7.6 0v.7h2.1c.8 0 1.4.7 1.3 1.5l-1 10.2a2.3 2.3 0 0 1-2.3 2.1H8.1a2.3 2.3 0 0 1-2.3-2.1l-1-10.2c-.1-.8.5-1.5 1.3-1.5h2.1zm2 0h3.6V6.5a1.8 1.8 0 0 0-3.6 0v.7z"/></svg>
-        </span>
+      <button class="action shop" type="button" data-sheet="shop" aria-label="Ускорения">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Ускорения
       </button>
     </div>
@@ -613,44 +580,40 @@
       <div class="auto-list" id="autoList"></div>
       <div class="coin-zone">
         <div class="coin-wrap" id="coinWrap">
-          <button class="coin" id="coin" aria-label="Получить TG Coin">
+          <button class="coin" id="coin" aria-label="Нажмите для получения монет">
             <span class="online">
-              <svg viewBox="0 0 24 24"><path d="M12 12a3.6 3.6 0 1 0-3.6-3.6A3.6 3.6 0 0 0 12 12zm0 2c-3.5 0-6.4 2-6.4 4.5V20h12.8v-1.5C18.4 16 15.5 14 12 14z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               онлайн 150K
             </span>
-            <span class="coin-logo">
-              <span class="mark">
-                <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3zm-3.2 2.1-8.9 7.2-.4 3.2-1.5-4.7 10.8-5.7z"/></svg>
+            <span class="pay-logo">
+              <span class="pay-mark">
+                <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z"/></svg>
               </span>
-              TG PAY
+              <span class="pay-text">pay</span>
             </span>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="sheet" id="sheet-shop" data-sheet-panel="shop">
-      <div class="sheet-card">
+    <div class="overlay" id="overlay-shop" data-sheet-panel="shop">
+      <div class="sheet">
         <div class="sheet-head">
           <h2>Ускорения</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">
-            <svg viewBox="0 0 24 24"><path d="M6.4 5.2 12 10.8l5.6-5.6 1.8 1.8L13.8 12l5.6 5.6-1.8 1.8L12 13.8l-5.6 5.6-1.8-1.8L10.2 12 4.6 6.4l1.8-1.2z"/></svg>
-          </button>
+          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
         </div>
         <div class="sheet-body" id="upgrades"></div>
       </div>
     </div>
 
-    <div class="sheet" id="sheet-transfer" data-sheet-panel="transfer">
-      <div class="sheet-card">
+    <div class="overlay" id="overlay-transfer" data-sheet-panel="transfer">
+      <div class="sheet">
         <div class="sheet-head">
           <h2>Перевести</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">
-            <svg viewBox="0 0 24 24"><path d="M6.4 5.2 12 10.8l5.6-5.6 1.8 1.8L13.8 12l5.6 5.6-1.8 1.8L12 13.8l-5.6 5.6-1.8-1.8L10.2 12 4.6 6.4l1.8-1.2z"/></svg>
-          </button>
+          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
         </div>
         <div class="sheet-body">
-          <p class="panel-note">Отправляйте TG Coin по уникальному ID. Ваш ID показан ниже.</p>
+          <p class="panel-note">Переводите TG Coin по уникальному ID игрока.</p>
           <div class="profile-card">
             <div class="profile-name" id="profileName">Игрок</div>
             <div class="profile-id" id="profileId">ID: —</div>
@@ -658,42 +621,37 @@
           <form class="transfer-form" id="transferForm">
             <label>ID получателя<input id="recipientId" required placeholder="TG-12345678"></label>
             <label>Сумма<input id="transferAmount" required min="1" step="1" type="number" placeholder="0"></label>
-            <button class="primary" type="submit">Отправить TG Coin</button>
+            <button class="primary" type="submit">Отправить</button>
             <div class="transfer-message" id="transferMessage"></div>
           </form>
         </div>
       </div>
     </div>
 
-    <div class="sheet" id="sheet-rating" data-sheet-panel="rating">
-      <div class="sheet-card">
+    <div class="overlay" id="overlay-rating" data-sheet-panel="rating">
+      <div class="sheet">
         <div class="sheet-head">
           <h2>Топ</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">
-            <svg viewBox="0 0 24 24"><path d="M6.4 5.2 12 10.8l5.6-5.6 1.8 1.8L13.8 12l5.6 5.6-1.8 1.8L12 13.8l-5.6 5.6-1.8-1.8L10.2 12 4.6 6.4l1.8-1.2z"/></svg>
-          </button>
+          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
         </div>
-        <div class="sheet-body">
-          <p class="panel-note">Рейтинг игроков по балансу TG Coin.</p>
-          <div class="rating-list" id="ratingList"></div>
-        </div>
+        <div class="sheet-body" id="ratingList"></div>
       </div>
     </div>
 
     <div class="modal" id="registration" hidden>
       <form class="modal-card" id="registrationForm">
         <h1>
-          <span class="tg-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3zm-3.2 2.1-8.9 7.2-.4 3.2-1.5-4.7 10.8-5.7z"/></svg>
+          <span class="coin-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg>
           </span>
           TG Coin
         </h1>
-        <p>Мини-регистрация: выберите имя, а ID для переводов выдаётся автоматически.</p>
+        <p>Выберите имя. ID для переводов будет выдан автоматически.</p>
         <div class="modal-id" id="newProfileId"></div>
         <label>Ваше имя
           <input id="registrationName" required maxlength="20" placeholder="Например, Алексей" autocomplete="nickname">
         </label>
-        <p style="margin-bottom:0"><button class="primary" type="submit">Начать играть</button></p>
+        <button class="primary" type="submit" style="width:100%;margin-top:16px">Начать играть</button>
       </form>
     </div>
   </section>
@@ -702,45 +660,39 @@
     (() => {
       "use strict";
       const KEY = "tgCoinGameState";
+      const badge = '<span class="coin-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg></span>';
       const icons = {
-        cursor: '<svg viewBox="0 0 24 24"><path d="M6.2 3.4c-.7-.4-1.5.3-1.3 1.1l2.8 14.2c.2.9 1.4 1.1 1.9.3l3.1-4.5 4.8 3.5c.8.6 1.9-.2 1.7-1.2L17.4 4.1c-.2-.8-1-.1-1.5.4L12 9.2 6.2 3.4z"/></svg>',
-        auto: '<svg viewBox="0 0 24 24"><path d="M5.5 7.2A2.2 2.2 0 0 1 7.7 5h8.6a2.2 2.2 0 0 1 2.2 2.2v7.1a2.2 2.2 0 0 1-2.2 2.2H7.7a2.2 2.2 0 0 1-2.2-2.2V7.2zm2.4 11.1h8.2a1 1 0 1 1 0 2H7.9a1 1 0 1 1 0-2zm1.8-9.4h1.8v2.4H9.7V8.9zm4.2 0h1.8v2.4h-1.8V8.9z"/></svg>',
-        tank: '<svg viewBox="0 0 24 24"><path d="M9.2 3.5h5.6a1 1 0 0 1 1 1V6h1.1A2.1 2.1 0 0 1 19 8.1v10.3A2.1 2.1 0 0 1 16.9 20.5H7.1A2.1 2.1 0 0 1 5 18.4V8.1A2.1 2.1 0 0 1 7.1 6h1.1V4.5a1 1 0 0 1 1-1zM9 10.2v1.8h6V10.2H9zm0 3.6v1.8h6v-1.8H9z"/></svg>',
-        recovery: '<svg viewBox="0 0 24 24"><path d="M12 3.2a8.8 8.8 0 1 1-7.6 4.3 1 1 0 0 1 1.7 1A6.8 6.8 0 1 0 12 5.2V7l3.4-2.7L12 1.6v1.6z"/></svg>'
+        cursor: '<svg viewBox="0 0 24 24"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/><path d="M13 13l6 6"/></svg>',
+        gpu: '<svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h2M14 10h2M8 14h8"/><path d="M2 10v4M22 10v4M10 2v2M14 2v2M10 20v2M14 20v2"/></svg>',
+        rack: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="10" width="18" height="5" rx="1"/><rect x="3" y="16" width="18" height="5" rx="1"/><circle cx="7" cy="6.5" r="1" fill="currentColor"/><circle cx="7" cy="12.5" r="1" fill="currentColor"/><circle cx="7" cy="18.5" r="1" fill="currentColor"/></svg>',
+        server: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="6" rx="1"/><rect x="4" y="11" width="16" height="6" rx="1"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="14" r="1" fill="currentColor"/><path d="M12 19v2M8 21h8"/></svg>'
       };
-      const colors = ["color-orange", "color-green", "color-blue", "color-pink"];
+      const colors = ["c-orange", "c-green", "c-blue", "c-pink"];
       const definitions = [
-        { id: "click", name: "Усилитель клика", description: "Увеличивает доход от каждого нажатия на +1.", icon: "cursor", yield: level => `+${1 + level}/клик`, cost: level => Math.ceil(10 * 1.5 ** level) },
-        { id: "auto", name: "Автоклик", description: "Даёт +1 монету в секунду за каждый уровень.", icon: "auto", yield: level => `+${level}/сек`, cost: level => Math.ceil(50 * 1.5 ** level) },
-        { id: "tank", name: "Бак энергии", description: "Увеличивает максимальную энергию на 50.", icon: "tank", yield: level => `+${50 * level} макс.`, cost: level => 100 * (level + 1) },
-        { id: "recovery", name: "Скорость восстановления", description: "Увеличивает восстановление энергии на 0,5/сек.", icon: "recovery", yield: level => `+${(1 + .5 * level).toFixed(1)}/сек`, cost: level => 75 * (level + 1) }
+        { id: "click", name: "Курсор", icon: "cursor", badge: level => level > 0 ? `x${level + 1}` : null, yield: level => `+${(0.001 * (1 + level)).toFixed(3)}/сек`, cost: level => Math.ceil(10 * 1.5 ** level) },
+        { id: "auto", name: "Видеокарта", icon: "gpu", badge: null, yield: level => `+${level}/сек`, cost: level => Math.ceil(50 * 1.5 ** level) },
+        { id: "tank", name: "Энергоблок", icon: "rack", badge: null, yield: level => `+${50 * level} макс.`, cost: level => 100 * (level + 1) },
+        { id: "recovery", name: "Сервер", icon: "server", badge: null, yield: level => `+${(1 + .5 * level).toFixed(1)}/сек`, cost: level => 75 * (level + 1) }
       ];
       const initial = () => ({
-        coins: 0,
-        energy: 100,
+        coins: 0, energy: 100,
         upgrades: { click: 0, auto: 0, tank: 0, recovery: 0 },
-        autoCarry: 0,
-        lastSeen: Date.now(),
-        profile: null
+        autoCarry: 0, lastSeen: Date.now(), profile: null
       });
 
       let state;
       try {
         const saved = JSON.parse(localStorage.getItem(KEY));
-        state = saved && saved.upgrades
-          ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } }
-          : initial();
-      } catch {
-        state = initial();
-      }
+        state = saved?.upgrades ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } } : initial();
+      } catch { state = initial(); }
 
       const maxEnergy = () => 100 + 50 * state.upgrades.tank;
       const recoveryRate = () => 1 + .5 * state.upgrades.recovery;
       const clickIncome = () => 1 + state.upgrades.click;
-      const applyElapsed = (ms) => {
-        const seconds = Math.max(0, ms / 1000);
-        state.energy = Math.min(maxEnergy(), state.energy + seconds * recoveryRate());
-        const passive = state.autoCarry + seconds * state.upgrades.auto;
+      const applyElapsed = ms => {
+        const sec = Math.max(0, ms / 1000);
+        state.energy = Math.min(maxEnergy(), state.energy + sec * recoveryRate());
+        const passive = state.autoCarry + sec * state.upgrades.auto;
         const earned = Math.floor(passive);
         state.coins += earned;
         state.autoCarry = passive - earned;
@@ -748,117 +700,83 @@
       applyElapsed(Date.now() - state.lastSeen);
       let lastTick = Date.now();
 
-      const $ = selector => document.querySelector(selector);
-      const $$ = selector => [...document.querySelectorAll(selector)];
-      const balance = $("#balance");
-      const perSecond = $("#perSecond");
-      const energyText = $("#energyText");
-      const energyFill = $("#energyFill");
-      const coin = $("#coin");
-      const coinWrap = $("#coinWrap");
-      const upgrades = $("#upgrades");
-      const autoList = $("#autoList");
-      const profileName = $("#profileName");
-      const profileId = $("#profileId");
-      const ratingList = $("#ratingList");
-      const headerPlayer = $("#headerPlayer");
+      const $ = s => document.querySelector(s);
+      const $$ = s => [...document.querySelectorAll(s)];
+      const balance = $("#balance"), perSecond = $("#perSecond"), energyText = $("#energyText");
+      const energyFill = $("#energyFill"), coin = $("#coin"), coinWrap = $("#coinWrap");
+      const upgrades = $("#upgrades"), autoList = $("#autoList");
+      const profileName = $("#profileName"), profileId = $("#profileId"), ratingList = $("#ratingList");
 
-      const save = () => {
-        state.lastSeen = Date.now();
-        localStorage.setItem(KEY, JSON.stringify(state));
-      };
-      const format = number => new Intl.NumberFormat("ru-RU").format(number);
-      const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      })[character]);
-      const createId = () => `TG-${String(Math.floor(10000000 + Math.random() * 90000000))}`;
-      const ranking = () => {
-        const players = [
-          { name: "Crypto Fox", coins: 48250 },
-          { name: "TG Master", coins: 31400 },
-          { name: "Coin Runner", coins: 18750 },
-          { name: "Blue Whale", coins: 10200 },
-          { name: state.profile?.name || "Вы", coins: state.coins, you: true }
-        ];
-        return players.sort((a, b) => b.coins - a.coins);
-      };
+      const save = () => { state.lastSeen = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); };
+      const format = n => new Intl.NumberFormat("ru-RU").format(n);
+      const esc = v => String(v).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
+      const createId = () => `TG-${Math.floor(10000000 + Math.random() * 90000000)}`;
+      const ranking = () => [
+        { name: "Crypto Fox", coins: 48250 },
+        { name: "TG Master", coins: 31400 },
+        { name: "Coin Runner", coins: 18750 },
+        { name: "Blue Whale", coins: 10200 },
+        { name: state.profile?.name || "Вы", coins: state.coins, you: true }
+      ].sort((a, b) => b.coins - a.coins);
 
-      const openSheet = name => {
-        $$(".sheet").forEach(sheet => sheet.classList.toggle("open", sheet.dataset.sheetPanel === name));
-      };
-      const closeSheets = () => $$(".sheet").forEach(sheet => sheet.classList.remove("open"));
+      const openSheet = name => $$(".overlay").forEach(o => o.classList.toggle("open", o.dataset.sheetPanel === name));
+      const closeSheets = () => $$(".overlay").forEach(o => o.classList.remove("open"));
 
       function render() {
         balance.textContent = format(state.coins);
         perSecond.textContent = `+${state.upgrades.auto}/сек`;
         energyText.textContent = `${Math.floor(state.energy)}/${maxEnergy()}`;
         energyFill.style.width = `${Math.max(0, state.energy / maxEnergy() * 100)}%`;
-
         if (state.profile) {
           profileName.textContent = state.profile.name;
-          profileId.textContent = `ID для переводов: ${state.profile.id}`;
-          headerPlayer.textContent = `${state.profile.name} · ${state.profile.id}`;
+          profileId.textContent = `ID: ${state.profile.id}`;
         }
 
-        ratingList.innerHTML = ranking().map((player, index) => `
-          <div class="rating-row${player.you ? " you" : ""}">
-            <div class="rank">#${index + 1}</div>
-            <b>${escapeHtml(player.name)}${player.you ? " · вы" : ""}</b>
-            <span>${format(player.coins)} TG</span>
-          </div>
-        `).join("");
+        ratingList.innerHTML = ranking().map((p, i) => `
+          <div class="rating-row${p.you ? " you" : ""}">
+            <div class="rank">#${i + 1}</div>
+            <b>${esc(p.name)}${p.you ? " · вы" : ""}</b>
+            <span>${format(p.coins)}</span>
+          </div>`).join("");
 
-        autoList.innerHTML = definitions.map((item, index) => {
-          const level = state.upgrades[item.id];
-          return `
-            <article class="mini-card">
-              <span class="mini-icon ${colors[index]}">${icons[item.icon]}</span>
-              <div>
-                <b>${item.name}</b>
-                <span>${item.yield(level)}</span>
-              </div>
-            </article>
-          `;
+        autoList.innerHTML = definitions.map((item, i) => {
+          const lvl = state.upgrades[item.id];
+          const b = item.badge?.(lvl);
+          return `<article class="mini-card">
+            <span class="mini-icon ${colors[i]}">${icons[item.icon]}${b ? `<span class="mini-badge">${b}</span>` : ""}</span>
+            <div><b>${item.name}</b><span>${item.yield(lvl)}</span></div>
+          </article>`;
         }).join("");
 
-        upgrades.innerHTML = definitions.map((item, index) => {
-          const level = state.upgrades[item.id];
-          const cost = item.cost(level);
-          const affordable = state.coins >= cost;
-          return `
-            <article class="upgrade">
-              <span class="upgrade-icon ${colors[index]}">${icons[item.icon]}</span>
-              <div>
-                <h3>${item.name}</h3>
-                <div class="yield">${item.yield(level)} · ур. ${level}</div>
-                <p>${item.description}</p>
-              </div>
-              <button class="buy" data-upgrade="${item.id}" ${affordable ? "" : "disabled"}>
-                Купить за ${format(cost)} TG
+        upgrades.innerHTML = definitions.map((item, i) => {
+          const lvl = state.upgrades[item.id];
+          const cost = item.cost(lvl);
+          return `<article class="upgrade">
+            <span class="upgrade-icon ${colors[i]}">${icons[item.icon]}</span>
+            <div class="upgrade-info">
+              <div class="upgrade-title"><h3>${item.name}</h3><span class="yield">${item.yield(lvl)}</span></div>
+              <button class="buy" data-upgrade="${item.id}" ${state.coins >= cost ? "" : "disabled"}>
+                Купить за ${format(cost)} ${badge}
               </button>
-            </article>
-          `;
+            </div>
+          </article>`;
         }).join("");
       }
 
-      function showFloat(amount, event) {
-        const rect = coinWrap.getBoundingClientRect();
-        const x = event?.clientX ? event.clientX - rect.left : rect.width / 2;
-        const y = event?.clientY ? event.clientY - rect.top : rect.height / 2;
-        const node = document.createElement("span");
-        node.className = "float";
-        node.textContent = `+${amount}`;
-        node.style.left = `${x}px`;
-        node.style.top = `${y}px`;
-        coinWrap.append(node);
-        node.addEventListener("animationend", () => node.remove());
+      function showFloat(amount, e) {
+        const r = coinWrap.getBoundingClientRect();
+        const el = document.createElement("span");
+        el.className = "float";
+        el.textContent = `+${amount}`;
+        el.style.left = `${(e?.clientX ?? r.left + r.width / 2) - r.left}px`;
+        el.style.top = `${(e?.clientY ?? r.top + r.height / 2) - r.top}px`;
+        coinWrap.append(el);
+        el.addEventListener("animationend", () => el.remove());
       }
 
-      coin.addEventListener("click", event => {
+      coin.addEventListener("click", e => {
         if (state.energy < 1) {
-          coin.classList.remove("empty");
-          void coin.offsetWidth;
-          coin.classList.add("empty");
+          coin.classList.remove("empty"); void coin.offsetWidth; coin.classList.add("empty");
           return;
         }
         const income = clickIncome();
@@ -867,106 +785,62 @@
         coin.classList.add("pressed");
         setTimeout(() => coin.classList.remove("pressed"), 100);
         if (navigator.vibrate) navigator.vibrate(10);
-        showFloat(income, event);
-        save();
-        render();
+        showFloat(income, e);
+        save(); render();
       });
 
-      upgrades.addEventListener("click", event => {
-        const button = event.target.closest(".buy:not(:disabled)");
-        if (!button) return;
-        const item = definitions.find(definition => definition.id === button.dataset.upgrade);
+      upgrades.addEventListener("click", e => {
+        const btn = e.target.closest(".buy:not(:disabled)");
+        if (!btn) return;
+        const item = definitions.find(d => d.id === btn.dataset.upgrade);
         const cost = item.cost(state.upgrades[item.id]);
         if (state.coins < cost) return;
         state.coins -= cost;
-        state.upgrades[item.id] += 1;
+        state.upgrades[item.id]++;
         state.energy = Math.min(state.energy, maxEnergy());
-        save();
-        render();
+        save(); render();
         const bought = upgrades.querySelector(`[data-upgrade="${item.id}"]`);
         bought.textContent = "Куплено!";
         bought.classList.add("success");
-        setTimeout(() => {
-          if (bought.isConnected) {
-            bought.classList.remove("success");
-            render();
-          }
-        }, 200);
+        setTimeout(() => { bought.classList.remove("success"); render(); }, 200);
       });
 
-      $$("[data-sheet]").forEach(button => {
-        button.addEventListener("click", () => openSheet(button.dataset.sheet));
-      });
-      $$("[data-close]").forEach(button => {
-        button.addEventListener("click", closeSheets);
-      });
-      $$(".sheet").forEach(sheet => {
-        sheet.addEventListener("click", event => {
-          if (event.target === sheet) closeSheets();
-        });
-      });
+      $$("[data-sheet]").forEach(b => b.addEventListener("click", () => openSheet(b.dataset.sheet)));
+      $$("[data-close]").forEach(b => b.addEventListener("click", closeSheets));
+      $$(".overlay").forEach(o => o.addEventListener("click", e => { if (e.target === o) closeSheets(); }));
 
-      const registration = $("#registration");
-      const registrationForm = $("#registrationForm");
-      const registrationName = $("#registrationName");
-      const newProfileId = $("#newProfileId");
       if (!state.profile) {
         const id = createId();
-        newProfileId.textContent = `Ваш ID: ${id}`;
-        registration.hidden = false;
-        registrationForm.addEventListener("submit", event => {
-          event.preventDefault();
-          state.profile = { id, name: registrationName.value.trim() || "Игрок TG" };
-          registration.hidden = true;
-          save();
-          render();
+        $("#newProfileId").textContent = `Ваш ID: ${id}`;
+        $("#registration").hidden = false;
+        $("#registrationForm").addEventListener("submit", e => {
+          e.preventDefault();
+          state.profile = { id, name: $("#registrationName").value.trim() || "Игрок" };
+          $("#registration").hidden = true;
+          save(); render();
         });
       }
 
-      $("#transferForm").addEventListener("submit", event => {
-        event.preventDefault();
+      $("#transferForm").addEventListener("submit", e => {
+        e.preventDefault();
         const recipient = $("#recipientId").value.trim().toUpperCase();
         const amount = Number($("#transferAmount").value);
-        const message = $("#transferMessage");
-        if (!/^TG-\d{8}$/.test(recipient)) {
-          message.textContent = "Введите корректный ID в формате TG-12345678.";
-          return;
-        }
-        if (!Number.isInteger(amount) || amount < 1) {
-          message.textContent = "Укажите целое число монет.";
-          return;
-        }
-        if (amount > state.coins) {
-          message.textContent = "Недостаточно TG Coin на балансе.";
-          return;
-        }
+        const msg = $("#transferMessage");
+        if (!/^TG-\d{8}$/.test(recipient)) { msg.textContent = "ID в формате TG-12345678"; return; }
+        if (!Number.isInteger(amount) || amount < 1) { msg.textContent = "Укажите целое число"; return; }
+        if (amount > state.coins) { msg.textContent = "Недостаточно монет"; return; }
         state.coins -= amount;
-        save();
-        render();
-        message.textContent = `${format(amount)} TG Coin отправлено на ${recipient}.`;
-        event.target.reset();
+        save(); render();
+        msg.textContent = `Отправлено ${format(amount)} на ${recipient}`;
+        e.target.reset();
       });
 
-      function tick() {
-        const now = Date.now();
-        applyElapsed(now - lastTick);
-        lastTick = now;
-        save();
-        render();
-      }
+      const tick = () => { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); };
       document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-          const now = Date.now();
-          applyElapsed(now - lastTick);
-          lastTick = now;
-          save();
-          render();
-        }
+        if (!document.hidden) { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); }
       });
       window.addEventListener("beforeunload", save);
-      render();
-      save();
-      setInterval(tick, 100);
+      render(); save(); setInterval(tick, 100);
     })();
   </script>
 </body>
