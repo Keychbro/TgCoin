@@ -156,9 +156,9 @@
     }
     .auto-list::-webkit-scrollbar { display: none; }
     .mini-card {
-      flex: 0 0 155px;
+      flex: 0 0 175px;
       display: grid;
-      grid-template-columns: 48px 1fr;
+      grid-template-columns: 56px 1fr;
       align-items: center;
       gap: 10px;
       padding: 10px 12px;
@@ -166,19 +166,27 @@
       border-radius: 12px;
       background: var(--white);
     }
-    .mini-icon {
+    .auto-empty {
+      margin: 0;
+      padding: 0 18px 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .item-icon {
       position: relative;
       display: grid;
       place-items: center;
-      width: 46px;
-      height: 46px;
+      width: 56px;
+      height: 56px;
       border: 2px solid currentColor;
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--white);
+      flex-shrink: 0;
     }
-    .mini-icon svg {
-      width: 24px;
-      height: 24px;
+    .item-icon svg {
+      width: 28px;
+      height: 28px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -382,24 +390,6 @@
       border-bottom: 1px solid var(--line);
     }
     .upgrade:last-child { border-bottom: 0; }
-    .upgrade-icon {
-      display: grid;
-      place-items: center;
-      width: 56px;
-      height: 56px;
-      border: 2px solid currentColor;
-      border-radius: 12px;
-      background: var(--white);
-    }
-    .upgrade-icon svg {
-      width: 28px;
-      height: 28px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
     .upgrade-info { min-width: 0; }
     .upgrade-title {
       display: flex;
@@ -581,9 +571,9 @@
       <div class="coin-zone">
         <div class="coin-wrap" id="coinWrap">
           <button class="coin" id="coin" aria-label="Нажмите для получения монет">
-            <span class="online">
+            <span class="online" id="onlineBadge">
               <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              онлайн 150K
+              онлайн <span id="onlineCount">1</span>
             </span>
             <span class="pay-logo">
               <span class="pay-mark">
@@ -660,6 +650,10 @@
     (() => {
       "use strict";
       const KEY = "tgCoinGameState";
+      const ONLINE_KEY = "tgCoinOnlineSessions";
+      const SESSION_TTL = 60000;
+      const HEARTBEAT_MS = 10000;
+      const sessionId = crypto.randomUUID?.() || `s-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       const badge = '<span class="coin-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg></span>';
       const icons = {
         cursor: '<svg viewBox="0 0 24 24"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/><path d="M13 13l6 6"/></svg>',
@@ -706,18 +700,48 @@
       const energyFill = $("#energyFill"), coin = $("#coin"), coinWrap = $("#coinWrap");
       const upgrades = $("#upgrades"), autoList = $("#autoList");
       const profileName = $("#profileName"), profileId = $("#profileId"), ratingList = $("#ratingList");
+      const onlineCount = $("#onlineCount");
 
       const save = () => { state.lastSeen = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); };
       const format = n => new Intl.NumberFormat("ru-RU").format(n);
       const esc = v => String(v).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
       const createId = () => `TG-${Math.floor(10000000 + Math.random() * 90000000)}`;
-      const ranking = () => [
-        { name: "Crypto Fox", coins: 48250 },
-        { name: "TG Master", coins: 31400 },
-        { name: "Coin Runner", coins: 18750 },
-        { name: "Blue Whale", coins: 10200 },
-        { name: state.profile?.name || "Вы", coins: state.coins, you: true }
-      ].sort((a, b) => b.coins - a.coins);
+      const formatOnline = n => n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(".0", "")}K` : String(n);
+      const renderItemIcon = (item, index, level) => {
+        const badge = item.badge?.(level);
+        return `<span class="item-icon ${colors[index]}">${icons[item.icon]}${badge ? `<span class="mini-badge">${badge}</span>` : ""}</span>`;
+      };
+      const firstNames = ["Crypto", "Blue", "Fast", "Gold", "Lucky", "Dark", "Neo", "Mega", "Pro", "Super", "Iron", "Fire", "Ice", "Moon", "Star"];
+      const lastNames = ["Fox", "Wolf", "Tiger", "Miner", "Clicker", "Coin", "Trader", "Boss", "King", "Hawk", "Bear", "Dragon", "Ninja", "Pilot", "Lord"];
+      const npcName = index => `${firstNames[index % firstNames.length]} ${lastNames[Math.floor(index / firstNames.length) % lastNames.length]}`;
+      const npcCoins = index => Math.max(120, Math.floor(98500 - index * 920 + ((index * 37) % 400)));
+      const ranking = () => {
+        const players = Array.from({ length: 99 }, (_, index) => ({
+          name: npcName(index),
+          coins: npcCoins(index)
+        }));
+        players.push({ name: state.profile?.name || "Вы", coins: state.coins, you: true });
+        return players.sort((a, b) => b.coins - a.coins).slice(0, 100);
+      };
+      const readSessions = () => {
+        try { return JSON.parse(localStorage.getItem(ONLINE_KEY) || "{}"); }
+        catch { return {}; }
+      };
+      const writeSessions = sessions => localStorage.setItem(ONLINE_KEY, JSON.stringify(sessions));
+      const pruneSessions = sessions => {
+        const now = Date.now();
+        Object.keys(sessions).forEach(id => {
+          if (now - sessions[id] > SESSION_TTL) delete sessions[id];
+        });
+        return sessions;
+      };
+      const updateOnline = () => {
+        const sessions = pruneSessions(readSessions());
+        sessions[sessionId] = Date.now();
+        writeSessions(sessions);
+        onlineCount.textContent = formatOnline(Object.keys(sessions).length);
+        return Object.keys(sessions).length;
+      };
 
       const openSheet = name => $$(".overlay").forEach(o => o.classList.toggle("open", o.dataset.sheetPanel === name));
       const closeSheets = () => $$(".overlay").forEach(o => o.classList.remove("open"));
@@ -739,20 +763,21 @@
             <span>${format(p.coins)}</span>
           </div>`).join("");
 
-        autoList.innerHTML = definitions.map((item, i) => {
-          const lvl = state.upgrades[item.id];
-          const b = item.badge?.(lvl);
-          return `<article class="mini-card">
-            <span class="mini-icon ${colors[i]}">${icons[item.icon]}${b ? `<span class="mini-badge">${b}</span>` : ""}</span>
-            <div><b>${item.name}</b><span>${item.yield(lvl)}</span></div>
-          </article>`;
-        }).join("");
+        const purchased = definitions
+          .map((item, index) => ({ item, index, level: state.upgrades[item.id] }))
+          .filter(entry => entry.level > 0);
+        autoList.innerHTML = purchased.length
+          ? purchased.map(({ item, index, level }) => `<article class="mini-card">
+              ${renderItemIcon(item, index, level)}
+              <div><b>${item.name}</b><span>${item.yield(level)}</span></div>
+            </article>`).join("")
+          : '<p class="auto-empty">Купите ускорения, чтобы они появились здесь</p>';
 
         upgrades.innerHTML = definitions.map((item, i) => {
           const lvl = state.upgrades[item.id];
           const cost = item.cost(lvl);
           return `<article class="upgrade">
-            <span class="upgrade-icon ${colors[i]}">${icons[item.icon]}</span>
+            ${renderItemIcon(item, i, lvl)}
             <div class="upgrade-info">
               <div class="upgrade-title"><h3>${item.name}</h3><span class="yield">${item.yield(lvl)}</span></div>
               <button class="buy" data-upgrade="${item.id}" ${state.coins >= cost ? "" : "disabled"}>
@@ -839,7 +864,17 @@
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); }
       });
-      window.addEventListener("beforeunload", save);
+      window.addEventListener("beforeunload", () => {
+        const sessions = pruneSessions(readSessions());
+        delete sessions[sessionId];
+        writeSessions(sessions);
+        save();
+      });
+      window.addEventListener("storage", event => {
+        if (event.key === ONLINE_KEY) updateOnline();
+      });
+      updateOnline();
+      setInterval(updateOnline, HEARTBEAT_MS);
       render(); save(); setInterval(tick, 100);
     })();
   </script>
