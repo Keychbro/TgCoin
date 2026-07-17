@@ -2,132 +2,685 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>TG Coin — кликер</title>
   <style>
-    :root { font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif; color: #30343b; }
+    :root {
+      --bg: #f2f3f5;
+      --panel: #ffffff;
+      --text: #222222;
+      --muted: #818c99;
+      --line: #dce1e6;
+      --line-strong: #c5ccd3;
+      --blue: #4986cc;
+      --blue-dark: #3a6fad;
+      --blue-soft: #e8f1fa;
+      --shadow: 0 8px 24px rgba(0, 0, 0, .08);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+    }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 20px; background: #edf1f5; user-select: none; }
-    .game { width: min(100%, 420px); height: min(800px, calc(100vh - 40px)); min-height: 640px; display: flex; flex-direction: column; overflow: hidden; background: #fff; box-shadow: 0 20px 50px rgba(43, 63, 82, .18); }
-    header { padding: 14px 16px 0; border-bottom: 2px solid #e4e8ed; }
-    .status { display: flex; justify-content: space-between; color: #20242a; font-size: 11px; font-weight: 700; }
-    .status-icons { letter-spacing: 2px; }
-    .top-row { padding: 23px 0 15px; text-align: center; }
-    .account-label { color: #9ca3ad; font-size: 10px; font-weight: 800; letter-spacing: .45px; text-transform: uppercase; }
-    .balance { margin-top: 3px; color: #24282f; font-size: 38px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; font-variant-numeric: tabular-nums; }
-    .balance::after { content: " TG"; display: inline-grid; place-items: center; width: 25px; height: 25px; margin-left: 5px; border: 2px solid #333840; border-radius: 50%; vertical-align: 5px; font-size: 8px; font-weight: 900; }
-    .per-second { margin-top: 5px; color: #4b91bd; font-size: 12px; font-weight: 700; }
-    .energy-row { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 0 0 12px; color: #8e98a5; font-size: 11px; }
-    .energy-track { width: 108px; height: 5px; overflow: hidden; border-radius: 9px; background: #e3e7ec; }
-    .energy-fill { height: 100%; border-radius: inherit; background: #4d9add; transition: width .12s linear; }
-    nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 14px 16px 13px; border-bottom: 2px solid #e4e8ed; }
-    .tab { display: grid; place-items: center; gap: 4px; min-height: 63px; border: 0; border-radius: 11px; color: #fff; cursor: pointer; font: inherit; font-size: 9px; font-weight: 800; box-shadow: 0 3px 7px rgba(54,82,114,.2); transition: transform .15s; }
-    .tab:active { transform: scale(.96); }
-    .tab:nth-child(1) { background: linear-gradient(145deg,#ff9a74,#ff6b55); }
-    .tab:nth-child(2) { background: linear-gradient(145deg,#a062f3,#7134d9); }
-    .tab:nth-child(3) { background: linear-gradient(145deg,#ff72bf,#e63198); }
-    .tab:nth-child(4) { background: linear-gradient(145deg,#50c6c7,#148a9a); }
-    .tab .icon { font-size: 25px; line-height: 1; filter: brightness(0) invert(1); }
-    .tab.active { box-shadow: 0 0 0 3px rgba(71,149,217,.22), 0 4px 9px rgba(54,82,114,.25); }
-    main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-    .screen { display: none; flex: 1; min-height: 0; }
-    .screen.active { display: flex; }
-    .home { flex-direction: column; overflow: hidden; }
-    .section-title { margin: 17px 16px 10px; color: #a1a7b0; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-    .auto-list { display: flex; gap: 9px; overflow-x: auto; padding: 0 16px 15px; scrollbar-width: none; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: #dfe3e8;
+      user-select: none;
+    }
+    .phone {
+      position: relative;
+      width: min(100%, 390px);
+      height: min(844px, calc(100vh - 36px));
+      min-height: 640px;
+      overflow: hidden;
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: 0 24px 60px rgba(20, 30, 45, .22);
+    }
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-right { letter-spacing: 1px; }
+    .chrome {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 10px 14px 0;
+    }
+    .chrome button {
+      width: 36px;
+      height: 28px;
+      border: 0;
+      border-radius: 14px;
+      background: #ebedf0;
+      color: #6d7885;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .balance-block {
+      padding: 18px 20px 8px;
+      text-align: center;
+    }
+    .account-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+    .balance-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .balance {
+      color: #000;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -.8px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tg-badge {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid #2a2f36;
+      border-radius: 50%;
+      background: #fff;
+      color: #2a2f36;
+    }
+    .tg-badge svg { width: 14px; height: 14px; }
+    .meta-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .energy-track {
+      width: 88px;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e1e5ea;
+    }
+    .energy-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #6db3f2, #4986cc);
+      transition: width .12s linear;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 14px 16px 6px;
+    }
+    .action {
+      display: grid;
+      place-items: center;
+      gap: 8px;
+      min-height: 92px;
+      padding: 14px 8px 12px;
+      border: 0;
+      border-radius: 16px;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .12);
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .action:active { transform: scale(.97); }
+    .action svg { width: 28px; height: 28px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .action.top { background: linear-gradient(160deg, #ffb36a 0%, #ff7a45 55%, #ff5c3a 100%); }
+    .action.transfer { background: linear-gradient(160deg, #a978ff 0%, #7b4dff 55%, #5f35e8 100%); }
+    .action.shop { background: linear-gradient(160deg, #ff7fc4 0%, #f24aa4 55%, #e2318f 100%); }
+    .home {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 250px);
+      min-height: 0;
+    }
+    .section-title {
+      margin: 14px 18px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+    .auto-list {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 16px 8px;
+      scrollbar-width: none;
+    }
     .auto-list::-webkit-scrollbar { display: none; }
-    .mini-upgrade { flex: 0 0 164px; display: grid; grid-template-columns: 35px 1fr; align-items: center; gap: 8px; padding: 9px; border: 2px solid #e8edf2; border-radius: 10px; box-shadow: 0 2px 6px rgba(36,56,76,.05); }
-    .mini-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 7px; background: #f7f9fb; color: #5d9c8a; font-size: 20px; }
-    .mini-upgrade b { display: block; overflow: hidden; color: #535963; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-    .mini-upgrade span { display: block; margin-top: 3px; color: #9ba2aa; font-size: 10px; }
-    .coin-zone { position: relative; flex: 1; display: grid; place-items: start center; padding-top: 20px; background: linear-gradient(#fff 0%, #f9fbff 100%); }
-    .online { position: absolute; top: 28px; z-index: 2; padding: 5px 10px; border-radius: 20px; background: rgba(64,122,216,.17); color: #4e8cce; font-size: 10px; font-weight: 700; }
-    .coin-wrap { position: relative; display: grid; place-items: center; width: 285px; height: 285px; margin-top: 30px; }
-    .coin { position: relative; width: 255px; height: 255px; border: 10px solid #76aafc; border-radius: 50%; cursor: pointer; background: radial-gradient(circle at 34% 25%,#94c1ff 0 4%,#6198f5 29%,#3978df 66%,#204eae 100%); box-shadow: inset 0 0 0 7px #2764c9, inset 0 0 0 14px rgba(194,222,255,.35), 0 17px 0 #2761be, 0 24px 30px rgba(50,105,197,.3); transition: transform .1s ease, filter .1s ease; }
-    .coin::before { content: ""; position: absolute; inset: 38px; border: 3px solid rgba(207,229,255,.7); border-radius: 50%; }
-    .coin span { position: relative; display: inline-block; padding: 6px 14px; border-radius: 11px; color: #dcecff; background: rgba(27,78,169,.38); box-shadow: inset 0 1px 0 rgba(255,255,255,.25); font-size: 34px; font-weight: 900; letter-spacing: -1.5px; text-shadow: 0 2px 0 rgba(35,87,172,.5); }
-    .coin small { position: absolute; top: 72px; left: 50%; transform: translateX(-50%); color: rgba(224,239,255,.8); font-size: 10px; font-weight: 700; white-space: nowrap; }
-    .coin:active, .coin.pressed { transform: scale(.9); }
+    .mini-card {
+      flex: 0 0 168px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .03);
+    }
+    .mini-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 2px solid currentColor;
+      border-radius: 12px;
+      background: #fafbfc;
+    }
+    .mini-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+    .mini-card b {
+      display: block;
+      overflow: hidden;
+      color: #3f4750;
+      font-size: 13px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mini-card span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .coin-zone {
+      position: relative;
+      flex: 1;
+      display: grid;
+      place-items: start center;
+      padding-top: 18px;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(73, 134, 204, .08), transparent 42%),
+        linear-gradient(#fff 0%, #f7f9fc 100%);
+    }
+    .online {
+      position: absolute;
+      top: 34px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .22);
+      color: rgba(255, 255, 255, .95);
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+    }
+    .online svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    .coin-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 290px;
+      height: 290px;
+      margin-top: 8px;
+    }
+    .coin {
+      position: relative;
+      width: 248px;
+      height: 248px;
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      background: radial-gradient(circle at 35% 28%, #7eb6f5 0%, #5a97de 38%, #4986cc 70%, #3a74b8 100%);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, .35),
+        inset 0 -10px 18px rgba(24, 74, 140, .28),
+        0 14px 0 #376fac,
+        0 22px 28px rgba(55, 111, 172, .28);
+      transition: transform .1s ease, filter .1s ease;
+    }
+    .coin::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 3px solid rgba(255, 255, 255, .18);
+      border-radius: 50%;
+    }
+    .coin-logo {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(232, 243, 255, .95);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      text-shadow: 0 2px 0 rgba(28, 74, 140, .35);
+    }
+    .coin-logo .mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 2.5px solid rgba(232, 243, 255, .9);
+      border-radius: 50%;
+    }
+    .coin-logo .mark svg { width: 18px; height: 18px; }
+    .coin:active, .coin.pressed { transform: scale(.92) translateY(4px); box-shadow: inset 0 2px 0 rgba(255,255,255,.35), inset 0 -8px 14px rgba(24,74,140,.28), 0 8px 0 #376fac, 0 12px 18px rgba(55,111,172,.25); }
     .coin.empty { animation: empty .28s linear; }
-    @keyframes empty { 25%,75% { filter: hue-rotate(310deg) saturate(2); transform: translateX(-5px); } 50% { transform: translateX(5px); } }
-    .float { position: absolute; z-index: 3; pointer-events: none; color: #3c82e2; font-size: 24px; font-weight: 900; text-shadow: 0 2px 4px #fff; animation: rise .8s ease-out forwards; }
-    @keyframes rise { from { opacity: 1; transform: translate(-50%,0) scale(.9); } to { opacity: 0; transform: translate(-50%,-78px) scale(1.12); } }
-    .shop { flex-direction: column; overflow-y: auto; padding: 10px 16px 20px; background: #fff; }
-    .shop-title { margin: 2px 0 8px; color: #30343b; font-size: 17px; }
-    #upgrades { display: grid; gap: 2px; }
-    .upgrade { display: grid; grid-template-columns: 45px 1fr auto; align-items: center; gap: 10px; padding: 13px 3px; border-bottom: 2px solid #edf0f2; }
-    .upgrade::before { display: grid; place-items: center; width: 42px; height: 42px; border: 2px solid #e5ebf0; border-radius: 7px; background: #fafbfd; content: "⚡"; color: #5994d1; font-size: 23px; }
-    .upgrade:nth-child(2)::before { content: "🖱"; } .upgrade:nth-child(3)::before { content: "🔋"; } .upgrade:nth-child(4)::before { content: "↻"; }
-    .upgrade h3 { margin: 0 0 3px; color: #4a5058; font-size: 12px; }
-    .upgrade p { margin: 0; color: #87909a; font-size: 10px; line-height: 1.35; }
-    .level { margin-top: 4px; color: #4e96c7; font-size: 10px; font-weight: 700; }
-    .buy { min-width: 91px; padding: 7px 7px; border: 0; border-radius: 15px; background: #4789bf; color: #fff; cursor: pointer; font: inherit; font-size: 10px; font-weight: 700; transition: background .15s, transform .15s; }
-    .buy:active { transform: scale(.95); } .buy:disabled { background: #c6cdd4; color: #fff; cursor: not-allowed; } .buy.success { background: #53b273; }
-    .placeholder { align-items: center; justify-content: center; color: #9aa2ac; font-size: 15px; text-align: center; padding: 30px; }
-    .panel { flex-direction: column; gap: 12px; padding: 18px 16px; overflow-y: auto; }
-    .panel h2 { margin: 0; color: #30343b; font-size: 20px; font-weight: 850; }
-    .panel-note { margin: 0 0 4px; color: #8d98a4; font-size: 12px; line-height: 1.45; }
-    .profile-card, .transfer-form, .rating-list { border: 2px solid #e5ebf0; border-radius: 14px; background: #fff; box-shadow: 0 4px 12px rgba(39,74,108,.06); }
-    .profile-card { padding: 15px; background: linear-gradient(135deg,#eaf4ff,#fff); }
-    .profile-name { color: #283a4e; font-size: 19px; font-weight: 850; }
-    .profile-id { margin-top: 5px; color: #4385be; font-size: 12px; font-weight: 800; }
-    .transfer-form { display: grid; gap: 10px; padding: 14px; }
-    label { color: #63707d; font-size: 11px; font-weight: 800; }
-    input { width: 100%; margin-top: 5px; padding: 11px 12px; border: 2px solid #dce5ed; border-radius: 9px; outline: none; color: #2e3741; font: inherit; font-size: 13px; }
-    input:focus { border-color: #4a91d0; }
-    .primary { padding: 11px; border: 0; border-radius: 10px; background: #3e83c0; color: #fff; cursor: pointer; font: inherit; font-size: 12px; font-weight: 850; }
-    .transfer-message { min-height: 18px; color: #4a91c2; font-size: 11px; font-weight: 700; }
-    .rating-list { overflow: hidden; }
-    .rating-row { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 9px; padding: 12px 13px; border-bottom: 2px solid #edf0f3; }
-    .rating-row:last-child { border-bottom: 0; }.rank { color: #4a8bc3; font-size: 15px; font-weight: 900; }.rating-row b { font-size: 13px; }.rating-row span { color: #798693; font-size: 11px; font-weight: 800; }
-    .modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(34,48,65,.52); }
-    .modal[hidden] { display: none; }.modal-card { width: min(100%,360px); padding: 24px; border-radius: 18px; background: #fff; box-shadow: 0 20px 55px rgba(24,39,56,.28); }
-    .modal-card h1 { margin: 0; color: #293747; font-size: 24px; font-weight: 900; }.modal-card p { color: #758292; font-size: 13px; line-height: 1.45; }.modal-id { margin: 13px 0; padding: 10px; border: 2px dashed #78a9d4; border-radius: 10px; color: #3d83bf; font-size: 15px; font-weight: 900; text-align: center; }
-    @media (max-width: 480px) { body { display: block; padding: 0; } .game { width: 100%; height: 100vh; min-height: 600px; } }
+    @keyframes empty {
+      25%, 75% { filter: saturate(1.4) hue-rotate(-20deg); transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+    }
+    .float {
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+      color: #4986cc;
+      font-size: 24px;
+      font-weight: 800;
+      text-shadow: 0 2px 0 #fff;
+      animation: rise .8s ease-out forwards;
+    }
+    @keyframes rise {
+      from { opacity: 1; transform: translate(-50%, 0) scale(.92); }
+      to { opacity: 0; transform: translate(-50%, -78px) scale(1.1); }
+    }
+    .sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: flex-end;
+      background: rgba(0, 0, 0, .35);
+    }
+    .sheet.open { display: flex; }
+    .sheet-card {
+      width: 100%;
+      max-height: 78%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 18px 18px 0 0;
+      background: #fff;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, .16);
+      animation: slideUp .22s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(24px); opacity: .7; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 18px 10px;
+      border-bottom: 2px solid #eef1f4;
+    }
+    .sheet-head h2 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 800;
+    }
+    .sheet-close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 50%;
+      background: #ebedf0;
+      color: #6d7885;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .sheet-body {
+      overflow-y: auto;
+      padding: 8px 16px 22px;
+    }
+    .upgrade {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 2px solid #eef1f4;
+    }
+    .upgrade:last-child { border-bottom: 0; }
+    .upgrade-icon {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border: 2.5px solid currentColor;
+      border-radius: 14px;
+      background: #fafbfc;
+    }
+    .upgrade-icon svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+    .upgrade h3 {
+      margin: 0 0 4px;
+      color: #2c333a;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .upgrade .yield {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .upgrade p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .buy {
+      min-width: 118px;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(73, 134, 204, .25);
+      transition: background .15s, transform .15s;
+    }
+    .buy:active { transform: scale(.96); }
+    .buy:disabled { background: #c5ccd4; box-shadow: none; cursor: not-allowed; }
+    .buy.success { background: #4bb36a; }
+    .panel-note {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .profile-card, .transfer-form, .rating-list {
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .profile-card {
+      padding: 16px;
+      margin-bottom: 12px;
+      background: linear-gradient(160deg, #eef5fc, #fff);
+    }
+    .profile-name { font-size: 20px; font-weight: 800; }
+    .profile-id { margin-top: 6px; color: var(--blue); font-size: 13px; font-weight: 700; }
+    .transfer-form { display: grid; gap: 12px; padding: 14px; }
+    label { color: #667482; font-size: 12px; font-weight: 700; }
+    input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px 14px;
+      border: 2px solid var(--line-strong);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    input:focus { border-color: var(--blue); }
+    .primary {
+      padding: 13px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .transfer-message { min-height: 18px; color: var(--blue); font-size: 12px; font-weight: 700; }
+    .rating-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 14px;
+      border-bottom: 2px solid #eef1f4;
+    }
+    .rating-row:last-child { border-bottom: 0; }
+    .rating-row.you { background: var(--blue-soft); }
+    .rank { color: var(--blue); font-size: 16px; font-weight: 800; }
+    .rating-row b { font-size: 14px; }
+    .rating-row span { color: #667482; font-size: 13px; font-weight: 700; }
+    .modal {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(20, 30, 45, .48);
+    }
+    .modal[hidden] { display: none; }
+    .modal-card {
+      width: min(100%, 340px);
+      padding: 24px 22px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .modal-card h1 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 26px;
+      font-weight: 800;
+    }
+    .modal-card p { color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .modal-id {
+      margin: 14px 0;
+      padding: 12px;
+      border: 2.5px dashed #8eb5de;
+      border-radius: 12px;
+      color: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .color-orange { color: #ff7a3d; }
+    .color-green { color: #3cb371; }
+    .color-blue { color: #4986cc; }
+    .color-pink { color: #e84f9a; }
+    .color-purple { color: #7b4dff; }
+    @media (max-width: 480px) {
+      body { display: block; padding: 0; background: #fff; }
+      .phone { width: 100%; height: 100vh; min-height: 100vh; border-radius: 0; box-shadow: none; }
+    }
   </style>
 </head>
 <body>
-  <section class="game" aria-label="Игра TG Coin">
-    <header>
-      <div class="status"><span>▮▮▮ ◉</span><span>12:30</span><span class="status-icons">◉ ▰</span></div>
-      <div class="top-row"><div class="account-label">Ваш счёт · TG COIN</div><div class="balance" id="balance">0</div><div class="per-second" id="perSecond">+0 TG/сек</div></div>
-      <div class="energy-row"><span>Энергия: <b id="energyText">100/100</b></span><div class="energy-track"><div class="energy-fill" id="energyFill"></div></div></div>
-    </header>
-    <nav aria-label="Навигация">
-      <button class="tab active" data-tab="home"><span class="icon">⌂</span>ИГРАТЬ</button>
-      <button class="tab" data-tab="transfer"><span class="icon">⇄</span>ПЕРЕВЕСТИ</button>
-      <button class="tab" data-tab="shop"><span class="icon">⚡</span>БУСТЫ</button>
-      <button class="tab" data-tab="rating"><span class="icon">♛</span>РЕЙТИНГ</button>
-    </nav>
-    <main>
-      <section class="screen home active" data-screen="home">
-        <div class="section-title">Автоматически · TG COIN</div>
-        <div class="auto-list" id="autoList"></div>
-        <div class="coin-zone"><div class="online">онлайн TG COIN</div><div class="coin-wrap" id="coinWrap"><button class="coin" id="coin" aria-label="Получить TG Coin"><small>НАЖМИТЕ</small><span>TG PAY</span></button></div></div>
-      </section>
-      <section class="screen shop" data-screen="shop"><h2 class="shop-title">Ускорения TG COIN</h2><div id="upgrades"></div></section>
-      <section class="screen panel" data-screen="transfer"><h2>Перевести TG COIN</h2><p class="panel-note">Ваш уникальный ID позволяет другим игрокам отправлять вам TG COIN.</p><div class="profile-card"><div class="profile-name" id="profileName"></div><div class="profile-id" id="profileId"></div></div><form class="transfer-form" id="transferForm"><label>ID получателя<input id="recipientId" required placeholder="TG-12345678"></label><label>Сумма TG COIN<input id="transferAmount" required min="1" step="1" type="number" placeholder="0"></label><button class="primary" type="submit">Отправить TG COIN</button><div class="transfer-message" id="transferMessage"></div></form></section>
-      <section class="screen panel" data-screen="rating"><h2>Рейтинг TG COIN</h2><p class="panel-note">Топ игроков по балансу. Ваш результат обновляется сразу.</p><div class="rating-list" id="ratingList"></div></section>
-    </main>
+  <section class="phone" aria-label="Игра TG Coin">
+    <div class="status">
+      <span>▮▮▮ ◉</span>
+      <span>12:30</span>
+      <span class="status-right">◉ ▰</span>
+    </div>
+    <div class="chrome">
+      <button type="button" aria-label="Ещё">⋯</button>
+      <button type="button" aria-label="Закрыть">✕</button>
+    </div>
+
+    <div class="balance-block">
+      <div class="account-label">Ваш счёт</div>
+      <div class="balance-row">
+        <div class="balance" id="balance">0</div>
+        <span class="tg-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3.5 11.8l16.2-6.3c.7-.3 1.4.4 1.1 1.1L15 20.2c-.2.6-1 .7-1.4.2l-3.4-4.1-3.1 2.3c-.5.4-1.2.1-1.3-.5L3.5 11.8z" fill="currentColor" stroke="none"/><path d="M10.3 16.2L9.7 20.4c-.1.6.7.9 1.1.4l2.1-2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </span>
+      </div>
+      <div class="meta-row">
+        <span id="perSecond">+0/сек</span>
+        <span>·</span>
+        <span>Энергия <b id="energyText">100/100</b></span>
+        <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action top" type="button" data-sheet="rating">
+        <svg viewBox="0 0 24 24"><path d="M12 3.5l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.8 7.2 18.4l.9-5.4L4.2 9.2l5.4-.8z"/></svg>
+        Топ
+      </button>
+      <button class="action transfer" type="button" data-sheet="transfer">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="11" rx="2.5"/><path d="M3.5 10.5h17"/><path d="M14.5 14.5h3"/><path d="M8 17.5l-2.5 2.5M5.5 20h4"/></svg>
+        Перевести
+      </button>
+      <button class="action shop" type="button" data-sheet="shop">
+        <svg viewBox="0 0 24 24"><path d="M7 8V7a5 5 0 0 1 10 0v1"/><path d="M5.5 8.5h13l-1.1 11.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8L5.5 8.5z"/></svg>
+        Ускорения
+      </button>
+    </div>
+
+    <div class="home">
+      <div class="section-title">Автоматически</div>
+      <div class="auto-list" id="autoList"></div>
+      <div class="coin-zone">
+        <div class="coin-wrap" id="coinWrap">
+          <button class="coin" id="coin" aria-label="Получить TG Coin">
+            <span class="online">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19c1.6-3.2 4-4.8 6.5-4.8S17 15.8 18.5 19"/></svg>
+              онлайн 150K
+            </span>
+            <span class="coin-logo">
+              <span class="mark">
+                <svg viewBox="0 0 24 24"><path d="M3.5 11.8l16.2-6.3c.7-.3 1.4.4 1.1 1.1L15 20.2c-.2.6-1 .7-1.4.2l-3.4-4.1-3.1 2.3c-.5.4-1.2.1-1.3-.5L3.5 11.8z" fill="currentColor" stroke="none"/></svg>
+              </span>
+              TG PAY
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet-shop" data-sheet-panel="shop">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <h2>Ускорения</h2>
+          <button class="sheet-close" type="button" data-close>×</button>
+        </div>
+        <div class="sheet-body" id="upgrades"></div>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet-transfer" data-sheet-panel="transfer">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <h2>Перевести</h2>
+          <button class="sheet-close" type="button" data-close>×</button>
+        </div>
+        <div class="sheet-body">
+          <p class="panel-note">Отправляйте TG Coin по уникальному ID. Ваш ID показывается ниже.</p>
+          <div class="profile-card">
+            <div class="profile-name" id="profileName">Игрок</div>
+            <div class="profile-id" id="profileId">ID: —</div>
+          </div>
+          <form class="transfer-form" id="transferForm">
+            <label>ID получателя<input id="recipientId" required placeholder="TG-12345678"></label>
+            <label>Сумма<input id="transferAmount" required min="1" step="1" type="number" placeholder="0"></label>
+            <button class="primary" type="submit">Отправить TG Coin</button>
+            <div class="transfer-message" id="transferMessage"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="sheet-rating" data-sheet-panel="rating">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <h2>Топ</h2>
+          <button class="sheet-close" type="button" data-close>×</button>
+        </div>
+        <div class="sheet-body">
+          <p class="panel-note">Рейтинг игроков по балансу TG Coin.</p>
+          <div class="rating-list" id="ratingList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="registration" hidden>
+      <form class="modal-card" id="registrationForm">
+        <h1>
+          <span class="tg-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3.5 11.8l16.2-6.3c.7-.3 1.4.4 1.1 1.1L15 20.2c-.2.6-1 .7-1.4.2l-3.4-4.1-3.1 2.3c-.5.4-1.2.1-1.3-.5L3.5 11.8z" fill="currentColor" stroke="none"/></svg>
+          </span>
+          TG Coin
+        </h1>
+        <p>Мини-регистрация: выберите имя, а ID для переводов выдаётся автоматически.</p>
+        <div class="modal-id" id="newProfileId"></div>
+        <label>Ваше имя
+          <input id="registrationName" required maxlength="20" placeholder="Например, Алексей" autocomplete="nickname">
+        </label>
+        <p style="margin-bottom:0"><button class="primary" type="submit">Начать играть</button></p>
+      </form>
+    </div>
   </section>
-  <div class="modal" id="registration" hidden><form class="modal-card" id="registrationForm"><h1>TG COIN</h1><p>Создайте профиль для игры и переводов. Имя можно изменить позже в локальном хранилище браузера.</p><div class="modal-id" id="newProfileId"></div><label>Ваше имя<input id="registrationName" required maxlength="20" placeholder="Например, Алексей" autocomplete="nickname"></label><p><button class="primary" type="submit">Начать играть</button></p></form></div>
+
   <script>
     (() => {
       "use strict";
       const KEY = "tgCoinGameState";
+      const icons = {
+        cursor: '<svg viewBox="0 0 24 24"><path d="M6 4l10 7-4.4 1.3L14 18z"/></svg>',
+        auto: '<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2"/><path d="M8 17v2M16 17v2M9 11h2M13 11h2"/></svg>',
+        tank: '<svg viewBox="0 0 24 24"><rect x="7" y="5" width="10" height="15" rx="2"/><path d="M10 2h4M9 10h6M9 14h6"/></svg>',
+        recovery: '<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg>'
+      };
+      const colors = ["color-orange", "color-green", "color-blue", "color-pink"];
       const definitions = [
-        { id: "click", name: "Усилитель клика", description: "Увеличивает доход от каждого нажатия на +1.", cost: level => Math.ceil(10 * 1.5 ** level) },
-        { id: "auto", name: "Автоклик", description: "Даёт +1 монету в секунду за каждый уровень.", cost: level => Math.ceil(50 * 1.5 ** level) },
-        { id: "tank", name: "Бак энергии", description: "Увеличивает максимальную энергию на 50.", cost: level => 100 * (level + 1) },
-        { id: "recovery", name: "Скорость восстановления", description: "Увеличивает восстановление энергии на 0,5/сек.", cost: level => 75 * (level + 1) }
+        { id: "click", name: "Усилитель клика", description: "Увеличивает доход от каждого нажатия на +1.", icon: "cursor", yield: level => `+${1 + level}/клик`, cost: level => Math.ceil(10 * 1.5 ** level) },
+        { id: "auto", name: "Автоклик", description: "Даёт +1 монету в секунду за каждый уровень.", icon: "auto", yield: level => `+${level}/сек`, cost: level => Math.ceil(50 * 1.5 ** level) },
+        { id: "tank", name: "Бак энергии", description: "Увеличивает максимальную энергию на 50.", icon: "tank", yield: level => `+${50 * level} макс.`, cost: level => 100 * (level + 1) },
+        { id: "recovery", name: "Скорость восстановления", description: "Увеличивает восстановление энергии на 0,5/сек.", icon: "recovery", yield: level => `+${(1 + .5 * level).toFixed(1)}/сек`, cost: level => 75 * (level + 1) }
       ];
-      const initial = () => ({ coins: 0, energy: 100, upgrades: { click: 0, auto: 0, tank: 0, recovery: 0 }, autoCarry: 0, lastSeen: Date.now(), profile: null });
+      const initial = () => ({
+        coins: 0,
+        energy: 100,
+        upgrades: { click: 0, auto: 0, tank: 0, recovery: 0 },
+        autoCarry: 0,
+        lastSeen: Date.now(),
+        profile: null
+      });
       let state;
       try {
         const saved = JSON.parse(localStorage.getItem(KEY));
-        state = saved && saved.upgrades ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } } : initial();
-      } catch { state = initial(); }
+        state = saved && saved.upgrades
+          ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } }
+          : initial();
+      } catch {
+        state = initial();
+      }
+
       const maxEnergy = () => 100 + 50 * state.upgrades.tank;
       const recoveryRate = () => 1 + .5 * state.upgrades.recovery;
       const clickIncome = () => 1 + state.upgrades.click;
@@ -141,69 +694,167 @@
       };
       applyElapsed(Date.now() - state.lastSeen);
       let lastTick = Date.now();
+
       const $ = selector => document.querySelector(selector);
-      const balance = $("#balance"), perSecond = $("#perSecond"), energyText = $("#energyText"), energyFill = $("#energyFill"), coin = $("#coin"), coinWrap = $("#coinWrap"), upgrades = $("#upgrades"), autoList = $("#autoList"), profileName = $("#profileName"), profileId = $("#profileId"), ratingList = $("#ratingList");
-      const save = () => { state.lastSeen = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); };
+      const $$ = selector => [...document.querySelectorAll(selector)];
+      const balance = $("#balance");
+      const perSecond = $("#perSecond");
+      const energyText = $("#energyText");
+      const energyFill = $("#energyFill");
+      const coin = $("#coin");
+      const coinWrap = $("#coinWrap");
+      const upgrades = $("#upgrades");
+      const autoList = $("#autoList");
+      const profileName = $("#profileName");
+      const profileId = $("#profileId");
+      const ratingList = $("#ratingList");
+
+      const save = () => {
+        state.lastSeen = Date.now();
+        localStorage.setItem(KEY, JSON.stringify(state));
+      };
       const format = number => new Intl.NumberFormat("ru-RU").format(number);
-      const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+      const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
       const createId = () => `TG-${String(Math.floor(10000000 + Math.random() * 90000000))}`;
       const ranking = () => {
         const players = [
-          { name: "Crypto Fox", coins: 48250 }, { name: "TG Master", coins: 31400 },
-          { name: "Coin Runner", coins: 18750 }, { name: "Blue Whale", coins: 10200 },
+          { name: "Crypto Fox", coins: 48250 },
+          { name: "TG Master", coins: 31400 },
+          { name: "Coin Runner", coins: 18750 },
+          { name: "Blue Whale", coins: 10200 },
           { name: state.profile?.name || "Вы", coins: state.coins, you: true }
         ];
         return players.sort((a, b) => b.coins - a.coins);
       };
+
+      const openSheet = name => {
+        $$(".sheet").forEach(sheet => sheet.classList.toggle("open", sheet.dataset.sheetPanel === name));
+      };
+      const closeSheets = () => $$(".sheet").forEach(sheet => sheet.classList.remove("open"));
+
       function render() {
         balance.textContent = format(state.coins);
-        perSecond.textContent = `+${state.upgrades.auto} TG/сек`;
+        perSecond.textContent = `+${state.upgrades.auto}/сек`;
         energyText.textContent = `${Math.floor(state.energy)}/${maxEnergy()}`;
         energyFill.style.width = `${Math.max(0, state.energy / maxEnergy() * 100)}%`;
+
         if (state.profile) {
           profileName.textContent = state.profile.name;
           profileId.textContent = `ID для переводов: ${state.profile.id}`;
         }
-        ratingList.innerHTML = ranking().map((player, index) => `<div class="rating-row"${player.you ? ' style="background:#edf7ff"' : ""}><div class="rank">#${index + 1}</div><b>${escapeHtml(player.name)}${player.you ? " · вы" : ""}</b><span>${format(player.coins)} TG</span></div>`).join("");
-        autoList.innerHTML = definitions.slice(0, 2).map((item, index) => `<article class="mini-upgrade"><span class="mini-icon">${index ? "▱" : "⌁"}</span><div><b>${item.name}</b><span>+${index ? state.upgrades.auto : clickIncome()} TG/мин</span></div></article>`).join("");
-        upgrades.innerHTML = definitions.map(item => {
-          const level = state.upgrades[item.id], cost = item.cost(level), affordable = state.coins >= cost;
-          return `<article class="upgrade"><div><h3>${item.name}</h3><p>${item.description}</p><div class="level">Уровень ${level} · +TG COIN</div></div><button class="buy" data-upgrade="${item.id}" ${affordable ? "" : "disabled"}>Купить за ${format(cost)} TG</button></article>`;
+
+        ratingList.innerHTML = ranking().map((player, index) => `
+          <div class="rating-row${player.you ? " you" : ""}">
+            <div class="rank">#${index + 1}</div>
+            <b>${escapeHtml(player.name)}${player.you ? " · вы" : ""}</b>
+            <span>${format(player.coins)} TG</span>
+          </div>
+        `).join("");
+
+        autoList.innerHTML = definitions.map((item, index) => {
+          const level = state.upgrades[item.id];
+          return `
+            <article class="mini-card">
+              <span class="mini-icon ${colors[index]}">${icons[item.icon]}</span>
+              <div>
+                <b>${item.name}</b>
+                <span>${item.yield(level)}</span>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        upgrades.innerHTML = definitions.map((item, index) => {
+          const level = state.upgrades[item.id];
+          const cost = item.cost(level);
+          const affordable = state.coins >= cost;
+          return `
+            <article class="upgrade">
+              <span class="upgrade-icon ${colors[index]}">${icons[item.icon]}</span>
+              <div>
+                <h3>${item.name}</h3>
+                <div class="yield">${item.yield(level)} · ур. ${level}</div>
+                <p>${item.description}</p>
+              </div>
+              <button class="buy" data-upgrade="${item.id}" ${affordable ? "" : "disabled"}>
+                Купить за ${format(cost)} TG
+              </button>
+            </article>
+          `;
         }).join("");
       }
+
       function showFloat(amount, event) {
         const rect = coinWrap.getBoundingClientRect();
         const x = event?.clientX ? event.clientX - rect.left : rect.width / 2;
         const y = event?.clientY ? event.clientY - rect.top : rect.height / 2;
         const node = document.createElement("span");
-        node.className = "float"; node.textContent = `+${amount}`; node.style.left = `${x}px`; node.style.top = `${y}px`;
-        coinWrap.append(node); node.addEventListener("animationend", () => node.remove());
+        node.className = "float";
+        node.textContent = `+${amount}`;
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+        coinWrap.append(node);
+        node.addEventListener("animationend", () => node.remove());
       }
+
       coin.addEventListener("click", event => {
         if (state.energy < 1) {
-          coin.classList.remove("empty"); void coin.offsetWidth; coin.classList.add("empty");
+          coin.classList.remove("empty");
+          void coin.offsetWidth;
+          coin.classList.add("empty");
           return;
         }
         const income = clickIncome();
-        state.energy -= 1; state.coins += income;
-        coin.classList.add("pressed"); setTimeout(() => coin.classList.remove("pressed"), 100);
+        state.energy -= 1;
+        state.coins += income;
+        coin.classList.add("pressed");
+        setTimeout(() => coin.classList.remove("pressed"), 100);
         if (navigator.vibrate) navigator.vibrate(10);
-        showFloat(income, event); save(); render();
+        showFloat(income, event);
+        save();
+        render();
       });
+
       upgrades.addEventListener("click", event => {
         const button = event.target.closest(".buy:not(:disabled)");
         if (!button) return;
         const item = definitions.find(definition => definition.id === button.dataset.upgrade);
         const cost = item.cost(state.upgrades[item.id]);
         if (state.coins < cost) return;
-        state.coins -= cost; state.upgrades[item.id] += 1;
+        state.coins -= cost;
+        state.upgrades[item.id] += 1;
         state.energy = Math.min(state.energy, maxEnergy());
-        save(); render();
+        save();
+        render();
         const bought = upgrades.querySelector(`[data-upgrade="${item.id}"]`);
-        bought.textContent = "Куплено!"; bought.classList.add("success");
-        setTimeout(() => { if (bought.isConnected) { bought.textContent = "Купить"; bought.classList.remove("success"); } }, 200);
+        bought.textContent = "Куплено!";
+        bought.classList.add("success");
+        setTimeout(() => {
+          if (bought.isConnected) {
+            bought.classList.remove("success");
+            render();
+          }
+        }, 200);
       });
-      const registration = $("#registration"), registrationForm = $("#registrationForm"), registrationName = $("#registrationName"), newProfileId = $("#newProfileId");
+
+      $$("[data-sheet]").forEach(button => {
+        button.addEventListener("click", () => openSheet(button.dataset.sheet));
+      });
+      $$("[data-close]").forEach(button => {
+        button.addEventListener("click", closeSheets);
+      });
+      $$(".sheet").forEach(sheet => {
+        sheet.addEventListener("click", event => {
+          if (event.target === sheet) closeSheets();
+        });
+      });
+
+      const registration = $("#registration");
+      const registrationForm = $("#registrationForm");
+      const registrationName = $("#registrationName");
+      const newProfileId = $("#newProfileId");
       if (!state.profile) {
         const id = createId();
         newProfileId.textContent = `Ваш ID: ${id}`;
@@ -211,31 +862,56 @@
         registrationForm.addEventListener("submit", event => {
           event.preventDefault();
           state.profile = { id, name: registrationName.value.trim() || "Игрок TG" };
-          registration.hidden = true; save(); render();
+          registration.hidden = true;
+          save();
+          render();
         });
       }
+
       $("#transferForm").addEventListener("submit", event => {
         event.preventDefault();
-        const recipient = $("#recipientId").value.trim().toUpperCase(), amount = Number($("#transferAmount").value), message = $("#transferMessage");
-        if (!/^TG-\d{8}$/.test(recipient)) { message.textContent = "Введите корректный ID в формате TG-12345678."; return; }
-        if (!Number.isInteger(amount) || amount < 1) { message.textContent = "Укажите целое число монет."; return; }
-        if (amount > state.coins) { message.textContent = "Недостаточно TG COIN на балансе."; return; }
-        state.coins -= amount; save(); render();
-        message.textContent = `${format(amount)} TG COIN отправлено на ${recipient}.`;
+        const recipient = $("#recipientId").value.trim().toUpperCase();
+        const amount = Number($("#transferAmount").value);
+        const message = $("#transferMessage");
+        if (!/^TG-\d{8}$/.test(recipient)) {
+          message.textContent = "Введите корректный ID в формате TG-12345678.";
+          return;
+        }
+        if (!Number.isInteger(amount) || amount < 1) {
+          message.textContent = "Укажите целое число монет.";
+          return;
+        }
+        if (amount > state.coins) {
+          message.textContent = "Недостаточно TG Coin на балансе.";
+          return;
+        }
+        state.coins -= amount;
+        save();
+        render();
+        message.textContent = `${format(amount)} TG Coin отправлено на ${recipient}.`;
         event.target.reset();
       });
-      document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(element => element.classList.toggle("active", element === tab));
-        document.querySelectorAll(".screen").forEach(screen => screen.classList.toggle("active", screen.dataset.screen === tab.dataset.tab));
-      }));
+
       function tick() {
-        const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render();
+        const now = Date.now();
+        applyElapsed(now - lastTick);
+        lastTick = now;
+        save();
+        render();
       }
       document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); }
+        if (!document.hidden) {
+          const now = Date.now();
+          applyElapsed(now - lastTick);
+          lastTick = now;
+          save();
+          render();
+        }
       });
       window.addEventListener("beforeunload", save);
-      render(); save(); setInterval(tick, 100);
+      render();
+      save();
+      setInterval(tick, 100);
     })();
   </script>
 </body>
