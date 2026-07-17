@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1E1E2E">
+  <title>TG Coin — кликер</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 18px; background: #1E1E2E; color: #fff; user-select: none; }
+    .game { width: min(100%, 420px); min-height: min(760px, calc(100vh - 36px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,.06); border-radius: 20px; background: #2A2A3C; box-shadow: 0 20px 50px rgba(0,0,0,.38); }
+    header { padding: 20px 20px 15px; }
+    .top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 750; }
+    .brand-badge { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(145deg,#ffe769,#e5a500); color: #6e4800; font-size: 13px; font-weight: 900; box-shadow: inset 0 2px 5px #fff7b5, 0 3px 8px #12121e; }
+    .balance { text-align: right; color: #FFD700; font-size: 24px; line-height: 1; font-weight: 850; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+    .per-second { margin-top: 5px; color: #a8a8bb; font-size: 12px; font-weight: 600; }
+    .energy-label { display: flex; justify-content: space-between; margin: 20px 0 8px; color: #d4d4df; font-size: 13px; }
+    .energy-track { height: 6px; overflow: hidden; border-radius: 99px; background: #3A3A4C; }
+    .energy-fill { height: 100%; width: 100%; border-radius: inherit; background: linear-gradient(90deg,#00BFFF,#1E90FF); transition: width .12s linear; }
+    main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .screen { display: none; flex: 1; min-height: 0; }
+    .screen.active { display: flex; }
+    .home { align-items: center; justify-content: center; padding: 15px 20px 36px; }
+    .hint { margin: 0 0 30px; color: #a8a8bb; font-size: 14px; }
+    .coin-wrap { position: relative; display: grid; place-items: center; width: 190px; height: 190px; }
+    .coin { position: relative; width: 150px; height: 150px; border: 0; border-radius: 50%; cursor: pointer; background: linear-gradient(145deg,#ffe766 0%,#FFD700 47%,#ed9700 100%); box-shadow: inset 7px 7px 14px rgba(255,255,255,.5), inset -10px -12px 16px rgba(166,86,0,.24), 0 12px 24px rgba(0,0,0,.3); transition: transform .1s ease, filter .1s ease; }
+    .coin:active, .coin.pressed { transform: scale(.9); }
+    .coin::before { content: ""; position: absolute; inset: 16px; border: 3px solid rgba(255,248,176,.85); border-radius: 50%; box-shadow: inset 0 0 12px rgba(255,255,230,.75); }
+    .coin span { position: relative; z-index: 1; color: #8a5900; font-size: 43px; font-weight: 950; text-shadow: 0 2px 0 #fff0a0; }
+    .coin.empty { animation: empty .28s linear; }
+    @keyframes empty { 25%,75% { filter: hue-rotate(310deg) saturate(2); transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+    .float { position: absolute; z-index: 3; pointer-events: none; color: #FFD700; font-size: 24px; font-weight: 900; text-shadow: 0 2px 5px rgba(0,0,0,.42); animation: rise .8s ease-out forwards; }
+    @keyframes rise { from { opacity: 1; transform: translate(-50%,0) scale(.9); } to { opacity: 0; transform: translate(-50%,-78px) scale(1.12); } }
+    .shop { flex-direction: column; gap: 12px; padding: 4px 16px 18px; overflow-y: auto; }
+    .shop-title { margin: 10px 4px 4px; font-size: 20px; }
+    .upgrade { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; padding: 15px; border: 1px solid rgba(255,215,0,.12); border-radius: 15px; background: #343449; }
+    .upgrade h3 { margin: 0 0 4px; font-size: 15px; }
+    .upgrade p { margin: 0; color: #b7b7c8; font-size: 12px; line-height: 1.4; }
+    .level { margin-top: 9px; color: #FFD700; font-size: 12px; font-weight: 700; }
+    .buy { align-self: center; min-width: 90px; padding: 10px 9px; border: 0; border-radius: 10px; background: #FFD700; color: #4a3500; cursor: pointer; font: inherit; font-size: 12px; font-weight: 850; transition: background .15s, transform .15s; }
+    .buy:active { transform: scale(.95); }
+    .buy:disabled { background: #555568; color: #9292a3; cursor: not-allowed; }
+    .buy.success { background: #52c66b; color: #fff; }
+    .placeholder { align-items: center; justify-content: center; color: #a8a8bb; font-size: 16px; text-align: center; padding: 30px; }
+    nav { display: grid; grid-template-columns: repeat(4,1fr); padding: 8px 8px 10px; border-top: 1px solid rgba(255,255,255,.07); background: #252536; }
+    .tab { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 7px 2px; border: 0; border-radius: 10px; background: transparent; color: #a2a2b5; cursor: pointer; font: inherit; font-size: 10px; }
+    .tab .icon { font-size: 19px; line-height: 1; filter: grayscale(.8); }
+    .tab.active { color: #FFD700; background: rgba(255,215,0,.07); font-weight: 750; }
+    .tab.active .icon { filter: none; }
+    @media (max-width: 480px) { body { display: block; padding: 0; } .game { width: 100%; min-height: 100vh; border: 0; border-radius: 0; } header { padding-top: max(20px, env(safe-area-inset-top)); } nav { padding-bottom: max(10px, env(safe-area-inset-bottom)); } }
+  </style>
+</head>
+<body>
+  <section class="game" aria-label="Игра TG Coin">
+    <header>
+      <div class="top-row">
+        <div class="brand"><span class="brand-badge">TG</span><span>TG Coin</span></div>
+        <div><div class="balance" id="balance">0</div><div class="per-second" id="perSecond">+0/сек</div></div>
+      </div>
+      <div class="energy-label"><span>Энергия</span><span id="energyText">100/100</span></div>
+      <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
+    </header>
+    <main>
+      <section class="screen home active" data-screen="home">
+        <p class="hint">Нажимайте на монету, чтобы зарабатывать</p>
+        <div class="coin-wrap" id="coinWrap"><button class="coin" id="coin" aria-label="Получить монеты"><span>TG</span></button></div>
+      </section>
+      <section class="screen shop" data-screen="shop"><h2 class="shop-title">Магазин улучшений</h2><div id="upgrades"></div></section>
+      <section class="screen placeholder" data-screen="rating">Здесь будет рейтинг</section>
+      <section class="screen placeholder" data-screen="tasks">Здесь будут задания</section>
+    </main>
+    <nav aria-label="Навигация">
+      <button class="tab active" data-tab="home"><span class="icon">🔨</span>Главная</button>
+      <button class="tab" data-tab="shop"><span class="icon">🛒</span>Магазин</button>
+      <button class="tab" data-tab="rating"><span class="icon">🏆</span>Рейтинг</button>
+      <button class="tab" data-tab="tasks"><span class="icon">📋</span>Задания</button>
+    </nav>
+  </section>
+  <script>
+    (() => {
+      "use strict";
+      const KEY = "tgCoinGameState";
+      const definitions = [
+        { id: "click", name: "Усилитель клика", description: "Увеличивает доход от каждого нажатия на +1.", cost: level => Math.ceil(10 * 1.5 ** level) },
+        { id: "auto", name: "Автоклик", description: "Даёт +1 монету в секунду за каждый уровень.", cost: level => Math.ceil(50 * 1.5 ** level) },
+        { id: "tank", name: "Бак энергии", description: "Увеличивает максимальную энергию на 50.", cost: level => 100 * (level + 1) },
+        { id: "recovery", name: "Скорость восстановления", description: "Увеличивает восстановление энергии на 0,5/сек.", cost: level => 75 * (level + 1) }
+      ];
+      const initial = () => ({ coins: 0, energy: 100, upgrades: { click: 0, auto: 0, tank: 0, recovery: 0 }, autoCarry: 0, lastSeen: Date.now() });
+      let state;
+      try {
+        const saved = JSON.parse(localStorage.getItem(KEY));
+        state = saved && saved.upgrades ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } } : initial();
+      } catch { state = initial(); }
+      const maxEnergy = () => 100 + 50 * state.upgrades.tank;
+      const recoveryRate = () => 1 + .5 * state.upgrades.recovery;
+      const clickIncome = () => 1 + state.upgrades.click;
+      const applyElapsed = (ms) => {
+        const seconds = Math.max(0, ms / 1000);
+        state.energy = Math.min(maxEnergy(), state.energy + seconds * recoveryRate());
+        const passive = state.autoCarry + seconds * state.upgrades.auto;
+        const earned = Math.floor(passive);
+        state.coins += earned;
+        state.autoCarry = passive - earned;
+      };
+      applyElapsed(Date.now() - state.lastSeen);
+      let lastTick = Date.now();
+      const $ = selector => document.querySelector(selector);
+      const balance = $("#balance"), perSecond = $("#perSecond"), energyText = $("#energyText"), energyFill = $("#energyFill"), coin = $("#coin"), coinWrap = $("#coinWrap"), upgrades = $("#upgrades");
+      const save = () => { state.lastSeen = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); };
+      const format = number => new Intl.NumberFormat("ru-RU").format(number);
+      function render() {
+        balance.textContent = format(state.coins);
+        perSecond.textContent = `+${state.upgrades.auto}/сек`;
+        energyText.textContent = `${Math.floor(state.energy)}/${maxEnergy()}`;
+        energyFill.style.width = `${Math.max(0, state.energy / maxEnergy() * 100)}%`;
+        upgrades.innerHTML = definitions.map(item => {
+          const level = state.upgrades[item.id], cost = item.cost(level), affordable = state.coins >= cost;
+          return `<article class="upgrade"><div><h3>${item.name}</h3><p>${item.description}</p><div class="level">Уровень: ${level} · Стоимость: ${format(cost)} 🪙</div></div><button class="buy" data-upgrade="${item.id}" ${affordable ? "" : "disabled"}>Купить</button></article>`;
+        }).join("");
+      }
+      function showFloat(amount, event) {
+        const rect = coinWrap.getBoundingClientRect();
+        const x = event?.clientX ? event.clientX - rect.left : rect.width / 2;
+        const y = event?.clientY ? event.clientY - rect.top : rect.height / 2;
+        const node = document.createElement("span");
+        node.className = "float"; node.textContent = `+${amount}`; node.style.left = `${x}px`; node.style.top = `${y}px`;
+        coinWrap.append(node); node.addEventListener("animationend", () => node.remove());
+      }
+      coin.addEventListener("click", event => {
+        if (state.energy < 1) {
+          coin.classList.remove("empty"); void coin.offsetWidth; coin.classList.add("empty");
+          return;
+        }
+        const income = clickIncome();
+        state.energy -= 1; state.coins += income;
+        coin.classList.add("pressed"); setTimeout(() => coin.classList.remove("pressed"), 100);
+        if (navigator.vibrate) navigator.vibrate(10);
+        showFloat(income, event); save(); render();
+      });
+      upgrades.addEventListener("click", event => {
+        const button = event.target.closest(".buy:not(:disabled)");
+        if (!button) return;
+        const item = definitions.find(definition => definition.id === button.dataset.upgrade);
+        const cost = item.cost(state.upgrades[item.id]);
+        if (state.coins < cost) return;
+        state.coins -= cost; state.upgrades[item.id] += 1;
+        state.energy = Math.min(state.energy, maxEnergy());
+        save(); render();
+        const bought = upgrades.querySelector(`[data-upgrade="${item.id}"]`);
+        bought.textContent = "Куплено!"; bought.classList.add("success");
+        setTimeout(() => { if (bought.isConnected) { bought.textContent = "Купить"; bought.classList.remove("success"); } }, 200);
+      });
+      document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(element => element.classList.toggle("active", element === tab));
+        document.querySelectorAll(".screen").forEach(screen => screen.classList.toggle("active", screen.dataset.screen === tab.dataset.tab));
+      }));
+      function tick() {
+        const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render();
+      }
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); }
+      });
+      window.addEventListener("beforeunload", save);
+      render(); save(); setInterval(tick, 100);
+    })();
+  </script>
+</body>
+</html>
