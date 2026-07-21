@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-labelledby="title desc">
+  <title id="title">Beauty Box Crimea</title>
+  <desc id="desc">020=4>2K9 ;>3>B8? A :@K<A:8< 70<:><</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fbf8fc"/><stop offset="1" stop-color="#eee5f3"/></linearGradient>
+  </defs>
+  <circle cx="150" cy="150" r="137" fill="url(#sky)" stroke="#9b7aac" stroke-width="1.5"/>
+  <path d="M34 84C58 38 96 23 124 29M266 84c-24-46-62-61-90-55" fill="none" stroke="#92729f" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#755881" stroke="#755881" stroke-linejoin="round">
+    <path d="M105 144v-54l8-16 7 16v-26l9-20 9 20v-26l9-20 9 20v26l9-20 9 20v26l7-16 8 16v54z" fill="#f8f3f9" stroke-width="2"/>
+    <path d="M98 145h105l-12 16h-82z" fill="#d9c9df"/>
+    <path d="M116 115h12v30h-12zm27-19h14v49h-14zm29 19h12v30h-12z" fill="#bda6c9" stroke="none"/>
+    <path d="M112 161h78l12 27H100z" fill="#efe5f1" stroke-width="2"/>
+    <path d="M142 141h16v47h-16z" fill="#755881" stroke="none"/>
+  </g>
+  <g fill="none" stroke="#6f7b6d" stroke-width="2" stroke-linecap="round">
+    <path d="M23 206c22-35 36-58 48-87M35 181l-16-13m26-5-18-9m29-10-14-13m15-10-16-7M278 210c-24-37-40-61-53-91m39 64 17-14m-28-5 19-10m-29-8 15-13m-15-11 17-8"/>
+  </g>
+  <g fill="#9b76ad">
+    <ellipse cx="29" cy="170" rx="4" ry="8" transform="rotate(-40 29 170)"/><ellipse cx="43" cy="157" rx="4" ry="8" transform="rotate(-40 43 157)"/><ellipse cx="55" cy="140" rx="4" ry="8" transform="rotate(-40 55 140)"/><ellipse cx="67" cy="123" rx="4" ry="8" transform="rotate(-40 67 123)"/>
+    <ellipse cx="271" cy="170" rx="4" ry="8" transform="rotate(40 271 170)"/><ellipse cx="257" cy="157" rx="4" ry="8" transform="rotate(40 257 157)"/><ellipse cx="245" cy="140" rx="4" ry="8" transform="rotate(40 245 140)"/><ellipse cx="233" cy="123" rx="4" ry="8" transform="rotate(40 233 123)"/>
+  </g>
+  <text x="150" y="218" text-anchor="middle" fill="#5b466b" font-size="26" font-family="Georgia,serif">Beauty Box</text>
+  <path d="M79 230h42m38 0h42" stroke="#9b7aac" stroke-width="1"/><text x="150" y="245" text-anchor="middle" fill="#755881" font-size="10" letter-spacing="5" font-family="Arial,sans-serif">CRIMEA</text>
+  <text x="150" y="266" text-anchor="middle" fill="#755881" font-size="6.5" letter-spacing="1.7" font-family="Arial,sans-serif">!  +!   +</text>
+</svg>
