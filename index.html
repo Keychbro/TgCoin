@@ -2,881 +2,136 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
-  <title>TG Coin — кликер</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4effa">
+  <meta name="description" content="Beauty Box Crimea — крымская косметика в красивых подарочных боксах.">
+  <title>Beauty Box Crimea — крымская косметика</title>
   <style>
-    :root {
-      --bg: #f2f3f5;
-      --white: #ffffff;
-      --text: #000000;
-      --muted: #818c99;
-      --line: #e1e3e6;
-      --blue: #4986cc;
-      --blue-light: #6fa3dc;
-      --blue-pill: rgba(255, 255, 255, .22);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: var(--text);
-    }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      background: var(--bg);
-      user-select: none;
-    }
-    .app {
-      position: relative;
-      width: min(100%, 390px);
-      height: 100vh;
-      max-height: 844px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--white);
-    }
-    .balance-block {
-      padding: 28px 20px 10px;
-      text-align: center;
-    }
-    .account-label {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-    }
-    .balance-row {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
-    }
-    .balance {
-      color: var(--text);
-      font-size: 44px;
-      font-weight: 500;
-      letter-spacing: -.5px;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-    .coin-badge {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      border: 2.5px solid #2c2f33;
-      border-radius: 50%;
-      background: var(--white);
-      color: #2c2f33;
-    }
-    .coin-badge svg { width: 15px; height: 15px; }
-    .meta-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .energy-track {
-      width: 80px;
-      height: 5px;
-      overflow: hidden;
-      border-radius: 99px;
-      background: #e8eaed;
-    }
-    .energy-fill {
-      height: 100%;
-      border-radius: inherit;
-      background: var(--blue);
-      transition: width .12s linear;
-    }
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      padding: 16px 16px 8px;
-    }
-    .action {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      aspect-ratio: 1;
-      border: 0;
-      border-radius: 16px;
-      color: #fff;
-      cursor: pointer;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      transition: transform .1s ease;
-    }
-    .action:active { transform: scale(.96); }
-    .action svg {
-      width: 32px;
-      height: 32px;
-      stroke: #fff;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .action.top { background: linear-gradient(145deg, #ffb347, #ff7a45); }
-    .action.transfer { background: linear-gradient(145deg, #9b6dff, #6b3fd4); }
-    .action.shop { background: linear-gradient(145deg, #ff6eb4, #e83296); }
-    .home {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .section-title {
-      margin: 12px 18px 10px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-    }
-    .auto-list {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 0 16px 10px;
-      scrollbar-width: none;
-    }
-    .auto-list::-webkit-scrollbar { display: none; }
-    .mini-card {
-      flex: 0 0 175px;
-      display: grid;
-      grid-template-columns: 56px 1fr;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border: 1.5px solid var(--line);
-      border-radius: 12px;
-      background: var(--white);
-    }
-    .auto-empty {
-      margin: 0;
-      padding: 0 18px 8px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .item-icon {
-      position: relative;
-      display: grid;
-      place-items: center;
-      width: 56px;
-      height: 56px;
-      border: 2px solid currentColor;
-      border-radius: 12px;
-      background: var(--white);
-      flex-shrink: 0;
-    }
-    .item-icon svg {
-      width: 28px;
-      height: 28px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .mini-badge {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      padding: 1px 5px;
-      border-radius: 6px;
-      background: var(--blue);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-    }
-    .mini-card b {
-      display: block;
-      overflow: hidden;
-      color: #2c2f33;
-      font-size: 14px;
-      font-weight: 600;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .mini-card span {
-      display: block;
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 500;
-    }
-    .coin-zone {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 24px;
-      background: var(--white);
-    }
-    .coin-wrap {
-      position: relative;
-      display: grid;
-      place-items: center;
-      width: min(100%, 320px);
-      height: min(100%, 320px);
-      max-width: 300px;
-      max-height: 300px;
-    }
-    .coin {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      border-radius: 50%;
-      cursor: pointer;
-      background: var(--blue);
-      box-shadow: 0 8px 24px rgba(73, 134, 204, .35);
-      transition: transform .1s ease, box-shadow .1s ease;
-    }
-    .coin::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.18) 0%, transparent 55%);
-      pointer-events: none;
-    }
-    .online {
-      position: absolute;
-      top: 18%;
-      left: 50%;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      background: var(--blue-pill);
-      color: rgba(255, 255, 255, .92);
-      font-size: 12px;
-      font-weight: 600;
-      transform: translateX(-50%);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .online svg {
-      width: 14px;
-      height: 14px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-    }
-    .pay-logo {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      pointer-events: none;
-    }
-    .pay-mark {
-      display: grid;
-      place-items: center;
-      width: 36px;
-      height: 36px;
-      border: 2px solid rgba(255, 255, 255, .75);
-      border-radius: 50%;
-      color: rgba(255, 255, 255, .9);
-    }
-    .pay-mark svg { width: 18px; height: 18px; fill: currentColor; }
-    .pay-text {
-      color: rgba(200, 225, 255, .95);
-      font-size: 32px;
-      font-weight: 500;
-      letter-spacing: -.5px;
-      text-transform: lowercase;
-    }
-    .coin:active, .coin.pressed {
-      transform: scale(.94);
-      box-shadow: 0 4px 16px rgba(73, 134, 204, .3);
-    }
-    .coin.empty { animation: shake .3s ease; }
-    @keyframes shake {
-      20%, 60% { transform: translateX(-4px); }
-      40%, 80% { transform: translateX(4px); }
-    }
-    .float {
-      position: absolute;
-      z-index: 3;
-      pointer-events: none;
-      color: var(--blue);
-      font-size: 22px;
-      font-weight: 700;
-      animation: rise .8s ease-out forwards;
-    }
-    @keyframes rise {
-      from { opacity: 1; transform: translate(-50%, 0); }
-      to { opacity: 0; transform: translate(-50%, -70px); }
-    }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      display: none;
-      align-items: flex-end;
-      background: rgba(0, 0, 0, .4);
-    }
-    .overlay.open { display: flex; }
-    .sheet {
-      width: 100%;
-      max-height: 85%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border-radius: 16px 16px 0 0;
-      background: var(--white);
-      animation: slideUp .2s ease-out;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .sheet-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 18px;
-    }
-    .sheet-head h2 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .sheet-close {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      border: 0;
-      border-radius: 50%;
-      background: #ebedf0;
-      color: #818c99;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-    }
-    .sheet-body {
-      overflow-y: auto;
-      padding: 0 16px 28px;
-    }
-    .upgrade {
-      display: grid;
-      grid-template-columns: 56px 1fr;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .upgrade:last-child { border-bottom: 0; }
-    .upgrade-info { min-width: 0; }
-    .upgrade-title {
-      display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .upgrade-title h3 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .upgrade-title .yield {
-      color: var(--blue);
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .buy {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 16px;
-      border: 0;
-      border-radius: 20px;
-      background: var(--blue);
-      color: #fff;
-      cursor: pointer;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background .15s, transform .1s;
-    }
-    .buy:active { transform: scale(.97); }
-    .buy:disabled { background: #c5ccd4; cursor: not-allowed; }
-    .buy.success { background: #4caf50; }
-    .buy .coin-badge {
-      width: 18px;
-      height: 18px;
-      border-width: 1.5px;
-    }
-    .buy .coin-badge svg { width: 10px; height: 10px; }
-    .panel-note {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .profile-card {
-      padding: 14px;
-      margin-bottom: 14px;
-      border: 1.5px solid var(--line);
-      border-radius: 12px;
-      background: #f7f8fa;
-    }
-    .profile-name { font-size: 18px; font-weight: 700; }
-    .profile-id { margin-top: 4px; color: var(--blue); font-size: 13px; font-weight: 600; }
-    .transfer-form { display: grid; gap: 12px; }
-    label { color: var(--muted); font-size: 13px; font-weight: 600; }
-    input {
-      width: 100%;
-      margin-top: 6px;
-      padding: 12px 14px;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      outline: none;
-      color: var(--text);
-      font: inherit;
-      font-size: 16px;
-    }
-    input:focus { border-color: var(--blue); }
-    .primary {
-      padding: 14px;
-      border: 0;
-      border-radius: 12px;
-      background: var(--blue);
-      color: #fff;
-      cursor: pointer;
-      font: inherit;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .transfer-message { min-height: 18px; color: var(--blue); font-size: 13px; font-weight: 600; }
-    .rating-row {
-      display: grid;
-      grid-template-columns: 32px 1fr auto;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .rating-row:last-child { border-bottom: 0; }
-    .rating-row.you { background: #eef4fb; margin: 0 -16px; padding: 12px 16px; }
-    .rank { color: var(--blue); font-size: 15px; font-weight: 700; }
-    .rating-row b { font-size: 15px; font-weight: 600; }
-    .rating-row span { color: var(--muted); font-size: 14px; font-weight: 600; }
-    .modal {
-      position: absolute;
-      inset: 0;
-      z-index: 30;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: rgba(0, 0, 0, .45);
-    }
-    .modal[hidden] { display: none; }
-    .modal-card {
-      width: min(100%, 340px);
-      padding: 24px;
-      border-radius: 16px;
-      background: var(--white);
-    }
-    .modal-card h1 {
-      margin: 0 0 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 24px;
-      font-weight: 700;
-    }
-    .modal-card p { margin: 0 0 16px; color: var(--muted); font-size: 14px; line-height: 1.45; }
-    .modal-id {
-      margin-bottom: 16px;
-      padding: 12px;
-      border: 2px dashed #a8c4e8;
-      border-radius: 10px;
-      color: var(--blue);
-      font-size: 15px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .c-orange { color: #f5a623; }
-    .c-green { color: #4caf50; }
-    .c-blue { color: #4986cc; }
-    .c-pink { color: #e91e8c; }
-    .c-purple { color: #7b4dff; }
-    @media (min-width: 481px) {
-      body { padding: 18px; }
-      .app { height: min(844px, calc(100vh - 36px)); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,.12); }
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+    :root{--ink:#382d4b;--cream:#f4effa;--paper:#fffaff;--sage:#e4daf0;--olive:#77618c;--rose:#bd7aa4;--sand:#e7d7ee;--line:rgba(56,45,75,.14)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--cream);color:var(--ink);font:500 15px/1.55 Manrope,Arial,sans-serif} a{color:inherit;text-decoration:none} button{font:inherit;cursor:pointer;border:0}.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+    .eyebrow{display:flex;gap:9px;align-items:center;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:800}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rose)}
+    header{position:absolute;z-index:5;top:0;width:100%;padding:22px 0}.nav{display:flex;align-items:center;justify-content:space-between;gap:22px}.brand{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.brand-logo{width:48px;height:48px;border-radius:50%;filter:drop-shadow(0 5px 8px rgba(72,48,91,.12));transition:transform .35s ease}.brand:hover .brand-logo{transform:rotate(-7deg) scale(1.06)}.links{display:flex;gap:29px;font-size:13px}.links a{transition:opacity .2s}.links a:hover{opacity:.52}.nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;border-radius:48% 52% 47% 53% / 58% 58% 42% 42%;padding:12px 24px;font-size:12px;font-weight:800;letter-spacing:.025em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45),0 9px 20px rgba(69,45,89,.12);transition:transform .2s,background .2s,box-shadow .2s}.nav-cta,.button.dark{background:linear-gradient(135deg,#382d4b,#5f4872);color:white}.nav-cta:hover,.button:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.65),0 14px 25px rgba(69,45,89,.19)}.menu{display:none;background:none;font-size:24px;color:var(--ink)}
+    .hero{min-height:725px;position:relative;overflow:hidden;background:linear-gradient(112deg,#e6d9f0 0%,#f8eef8 48%,#cfc6e3 100%);padding:150px 0 66px}.hero:before{content:"";position:absolute;width:58vw;height:58vw;right:-15vw;top:8%;border-radius:50%;background:rgba(255,255,255,.32);box-shadow:-40px 40px 0 rgba(255,255,255,.16)}.hero-grid{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:510px}.hero-copy{max-width:580px}.hero h1{margin:19px 0 20px;font:600 clamp(45px,6vw,78px)/.98 "Playfair Display",serif;letter-spacing:-.045em}.hero h1 em{font-style:italic;color:var(--olive)}.hero p{max-width:420px;margin:0 0 31px;font-size:16px;color:#655d72}.hero-actions{display:flex;gap:12px;align-items:center}.button.pale{background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(119,97,140,.18),0 9px 20px rgba(69,45,89,.08);padding:12px 22px}.hero-note{margin-top:36px;display:flex;gap:10px;align-items:center;font-size:11px;color:#766c82}.hero-note svg{width:18px}.hero-visual{height:470px;position:relative}
+    .box-art{position:absolute;right:6%;bottom:5px;width:min(420px,100%);height:390px;transform:translate3d(var(--box-x,0),var(--box-y,0),0) rotate(-6deg);will-change:transform}.box-base{position:absolute;bottom:12px;left:44px;width:310px;height:252px;border-radius:12px 12px 27px 27px;background:linear-gradient(135deg,#80618d,#b89ac7 48%,#65496f);box-shadow:27px 29px 40px rgba(63,43,79,.22)}.box-base:after{content:"BEAUTY\A BOX\A CRIMEA";white-space:pre;position:absolute;left:34px;top:48px;color:#faf0fa;font:700 28px/1.12 "Playfair Display",serif;letter-spacing:.06em}.box-lid{position:absolute;z-index:2;width:332px;height:92px;left:30px;bottom:218px;background:linear-gradient(135deg,#b8a0c9,#e6c9df);border-radius:13px 13px 8px 8px;transform:skewY(6deg);box-shadow:0 12px 14px rgba(63,43,79,.12)}.bottle{position:absolute;z-index:3;border-radius:17px 17px 13px 13px;background:#f3e8f4;box-shadow:7px 10px 20px rgba(63,43,79,.18);will-change:transform}.bottle:before{content:"";position:absolute;background:#77618c;border-radius:4px 4px 0 0}.bottle:after{content:"CRIMEA";position:absolute;left:0;right:0;top:44%;text-align:center;color:#685775;font-size:8px;font-weight:800;letter-spacing:.09em}.b1{width:66px;height:158px;left:105px;bottom:165px;transform:translateY(var(--b1-y,0)) rotate(7deg)}.b1:before{width:32px;height:30px;left:17px;top:-27px}.b2{width:76px;height:193px;left:205px;bottom:153px;transform:translateY(var(--b2-y,0)) rotate(-2deg);background:#e6bedc}.b2:before{width:42px;height:28px;left:17px;top:-26px;background:#8c6fa0}.b3{width:57px;height:120px;left:278px;bottom:185px;transform:translateY(var(--b3-y,0)) rotate(-13deg);background:#ddd6ef}.b3:before{width:34px;height:18px;left:11px;top:-17px}.herb{position:absolute;color:#8a70a0;font:italic 56px "Playfair Display",serif;will-change:transform}.h1{right:4px;top:18px;transform:translate3d(var(--sparkle-one-x,0),var(--sparkle-one-y,0),0) rotate(25deg)}.h2{left:5px;bottom:69px;transform:translate3d(var(--sparkle-two-x,0),var(--sparkle-two-y,0),0) rotate(-30deg);font-size:48px}.tag{position:absolute;z-index:4;right:-3px;bottom:70px;width:92px;height:92px;display:grid;place-items:center;text-align:center;border-radius:50%;background:var(--rose);color:white;font-size:10px;line-height:1.3;font-weight:800;transform:translateY(var(--tag-y,0)) rotate(11deg);will-change:transform}
+    .benefits{background:var(--ink);color:#f9f7ee;padding:18px 0}.benefits .wrap{display:flex;justify-content:space-between;gap:20px}.benefit{display:flex;align-items:center;gap:10px;font-size:11px}.benefit b{font:600 20px "Playfair Display",serif;color:#d7c2a3}.section{padding:105px 0}.heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:40px}.heading h2{margin:9px 0 0;font:600 clamp(34px,4.3vw,54px)/1.05 "Playfair Display",serif;letter-spacing:-.035em}.heading p{max-width:325px;margin:0;color:#657067;font-size:13px}
+    .products{background:var(--paper)}.grid-products{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.product{background:var(--cream);border-radius:3px;overflow:hidden}.product-img{height:275px;position:relative;overflow:hidden;background:#ddd5ee}.product-img.peach{background:#edd5e5}.product-img.sand{background:#d4c7e4}.product-img:after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.38);right:-23px;bottom:-35px}.small-box{position:absolute;z-index:1;left:50%;top:52%;width:180px;height:145px;transform:translate(-50%,-50%) rotate(-8deg);border-radius:7px;background:linear-gradient(135deg,#80618d,#bc9cc8);box-shadow:13px 16px 20px rgba(63,43,79,.2)}.small-box:before{content:"BEAUTY BOX\A CRIMEA";white-space:pre;position:absolute;left:19px;top:27px;color:#fbf1fc;font:700 17px/1.05 "Playfair Display",serif}.small-box:after{content:"✳";position:absolute;right:15px;bottom:12px;font-size:36px;color:#e9dced}.peach .small-box{background:linear-gradient(135deg,#a86993,#dfacd0);transform:translate(-50%,-50%) rotate(8deg)}.sand .small-box{background:linear-gradient(135deg,#6f668c,#ada1cc);transform:translate(-50%,-50%) rotate(-4deg)}.product-copy{padding:20px 20px 21px}.product-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.product h3{margin:0;font:600 23px "Playfair Display",serif}.price{font-size:13px;font-weight:800;white-space:nowrap}.product p{min-height:40px;margin:9px 0 11px;font-size:12px;color:#71677d}.product-details{margin:0 0 16px;padding:0;list-style:none;font-size:10px;color:#7e6d8c}.product-details li{display:inline}.product-details li+li:before{content:" · "}.tiny-link{display:inline-flex;align-items:center;justify-content:center;min-height:39px;padding:9px 17px;border:0;border-radius:50% 50% 46% 54% / 64% 64% 38% 38%;background:linear-gradient(135deg,#49365c,#795488);color:#fff;font-size:10px;font-weight:800;letter-spacing:.02em;text-decoration:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),0 7px 14px rgba(75,48,93,.18);transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}.tiny-link:hover{transform:translateY(-3px) rotate(-1deg);filter:saturate(1.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 12px 20px rgba(75,48,93,.25)}
+    .surprise-box{display:grid;grid-template-columns:.82fr 1.18fr;overflow:hidden;margin-top:26px;border-radius:48px 36px 48px 36px / 46px 40px 46px 40px;background:linear-gradient(120deg,#523d68,#866395);color:#fff;box-shadow:0 20px 38px rgba(75,48,93,.16);animation:surprise-breathe 5s ease-in-out infinite}.surprise-art{position:relative;min-height:276px;overflow:hidden;background:radial-gradient(circle at 66% 32%,rgba(255,255,255,.25) 0 5%,transparent 6%),radial-gradient(circle at 28% 74%,rgba(235,197,224,.34) 0 4%,transparent 5%)}.surprise-art:before{content:"";position:absolute;left:50%;top:48%;width:174px;height:174px;border:1px solid rgba(255,255,255,.46);border-radius:50%;transform:translate(-50%,-50%) rotate(-10deg);box-shadow:0 0 0 26px rgba(255,255,255,.06)}.surprise-art:after{content:"✦  ❋  ✦";position:absolute;bottom:24px;left:0;right:0;text-align:center;letter-spacing:10px;color:#edcbe4;font-size:20px}.surprise-product-mark{position:absolute;z-index:1;left:50%;top:48%;display:grid;place-items:center;width:126px;height:108px;padding:14px;border-radius:11px;background:linear-gradient(135deg,#b58fbd,#edb9d7);box-shadow:16px 18px 24px rgba(35,19,45,.3);transform:translate(-50%,-50%) rotate(-10deg);color:#fff;font:700 14px/1.04 "Playfair Display",serif;text-align:center;animation:surprise-box-float 3.8s ease-in-out infinite}.surprise-product-mark small{display:block;margin-top:8px;font:700 8px Manrope,sans-serif;letter-spacing:.13em}.surprise-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:42px 47px}.surprise-copy .eyebrow:before{background:#ecc6df}.surprise-copy h3{margin:12px 0 10px;font:600 clamp(30px,3.6vw,45px)/1 "Playfair Display",serif;letter-spacing:-.04em}.surprise-copy p{max-width:500px;margin:0 0 16px;color:#f1e6f1;font-size:13px}.surprise-copy ul{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 15px;padding:0;list-style:none}.surprise-copy li{padding:5px 9px;border-radius:99px;background:rgba(255,255,255,.13);font-size:10px}.surprise-price{display:flex;align-items:baseline;gap:8px;margin:0 0 18px}.surprise-price span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#e7d7ea}.surprise-price b{font:600 24px "Playfair Display",serif}.surprise-copy button.tiny-link{background:#fff!important;color:#503b60!important;box-shadow:0 9px 18px rgba(33,19,44,.18)!important}.surprise-copy .tiny-link[data-tip]:after{background:#fff;color:#513b61;box-shadow:0 10px 24px rgba(33,19,44,.28)}.surprise-copy .tiny-link[data-tip]:before{color:#fff}
+    .about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:8vw;align-items:center}.about-visual{height:505px;position:relative;background:var(--sage);overflow:hidden}.about-visual:before{content:"";position:absolute;width:330px;height:330px;border:1px solid rgba(75,103,71,.4);border-radius:50%;left:13%;top:16%}.about-visual:after{content:"Крым";position:absolute;left:35px;bottom:18px;color:#567052;font:italic 72px "Playfair Display",serif}.sea{position:absolute;right:-30px;bottom:0;width:70%;height:55%;background:linear-gradient(150deg,transparent 45%,#89a89d 46%,#89a89d 57%,#73978c 58%);opacity:.85}.sun{position:absolute;right:27%;top:17%;width:94px;height:94px;border-radius:50%;background:#edc591}.about-copy h2{margin:11px 0 21px;font:600 clamp(35px,4vw,51px)/1.08 "Playfair Display",serif;letter-spacing:-.035em}.about-copy>p{color:#5a675d;max-width:470px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:33px 0 28px}.fact{padding:17px 20px 17px 0;border-top:1px solid var(--line)}.fact:nth-child(even){padding-left:19px;border-left:1px solid var(--line)}.fact b{display:block;font:600 26px "Playfair Display",serif}.fact span{font-size:11px;color:#68746b}
+    .ingredients{background:#e5dbee}.ingredient-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.ingredient{padding:25px 19px;background:rgba(255,255,255,.42);min-height:194px}.ingredient-icon{display:block;margin-bottom:28px;color:var(--olive);font:italic 44px "Playfair Display",serif}.ingredient h3{margin:0 0 8px;font:600 20px "Playfair Display",serif}.ingredient p{margin:0;color:#71677d;font-size:11px}
+    .how{background:#f2ebf7}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{position:relative;padding:23px 25px 25px;background:var(--paper);min-height:170px}.step-number{display:block;margin-bottom:25px;color:#ad83bd;font:600 36px/1 "Playfair Display",serif}.step h3{margin:0 0 7px;font:600 20px "Playfair Display",serif}.step p{margin:0;font-size:12px;color:#71677d}
+    .reviews{background:var(--paper);overflow:hidden}.review-track{display:flex;gap:16px;transition:transform .45s ease}.review{display:flex;flex-direction:column;flex:0 0 calc((100% - 32px)/3);padding:31px 29px;background:linear-gradient(145deg,#fbf6fc,#e9ddec);border:0;border-radius:38px 44px 35px 48px / 42px 37px 48px 40px;box-shadow:0 15px 30px rgba(99,69,111,.09);min-height:245px;position:relative}.review:before{content:"";position:absolute;top:17px;left:24px;width:32px;height:5px;border-radius:50%;background:#d3aad1}.quote-mark{position:absolute;right:25px;top:18px;color:#d7c1dd;font:700 62px/1 "Playfair Display",serif}.stars{color:#a96894;letter-spacing:2px;font-size:12px}.review blockquote{position:relative;margin:24px 0 25px;font:600 20px/1.37 "Playfair Display",serif}.review footer{position:relative;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;padding:12px 17px;min-height:48px;border:0;border-radius:50% 50% 46% 54% / 65% 65% 40% 40%;background:rgba(255,255,255,.62);box-shadow:inset 0 0 0 1px rgba(153,112,163,.14);color:#503c60;font-size:11px}.review footer b:before{content:"✦";margin-right:6px;color:#b27fac;font-size:9px}.review footer span{color:#856f91;font-style:italic;white-space:nowrap}.review-controls{display:flex;align-items:center;justify-content:space-between;margin-top:22px}.dots{display:flex;gap:7px}.dot{width:7px;height:7px;padding:0;border-radius:50%;background:#d4c2d8}.dot.active{width:24px;border-radius:10px;background:var(--rose)}.arrows{display:flex;gap:8px}.arrow{display:grid;place-items:center;width:37px;height:37px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);font-size:18px}.arrow:hover{background:#eadcea}
+    .cta{padding:87px 0;background:var(--olive);color:#fffaff;text-align:center}.cta .eyebrow{justify-content:center}.cta .eyebrow:before{background:#ecc7df}.cta h2{max-width:680px;margin:15px auto 16px;font:600 clamp(37px,5vw,61px)/1.04 "Playfair Display",serif;letter-spacing:-.04em}.cta p{max-width:430px;margin:0 auto 27px;color:#eee6f1;font-size:13px}.cta .button{background:#f8eff8;color:var(--ink)}
+    .site-footer{padding:31px 0;background:var(--ink);color:#edf0e8}.footer-grid{display:flex;justify-content:space-between;align-items:center;gap:20px}.footer-copy{font-size:11px;color:#aeb9aa}.footer-brand{font-size:12px}.socials{display:flex;gap:16px;font-size:11px;text-decoration:underline;text-underline-offset:3px}
+    .modal{position:fixed;z-index:20;inset:0;display:none;place-items:center;padding:20px;background:rgba(29,42,34,.47)}.modal.open{display:grid}.dialog{width:min(440px,100%);padding:34px;background:#fffdf8;position:relative;box-shadow:0 25px 70px rgba(0,0,0,.25)}.close{position:absolute;right:15px;top:11px;background:none;font-size:23px}.dialog h2{margin:8px 0;font:600 32px "Playfair Display",serif}.dialog p{margin:0 0 20px;color:#637067;font-size:12px}.form-row{display:grid;gap:10px}.form-row input{width:100%;padding:13px 14px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px}.form-row .button{margin-top:4px}.success{display:none;margin-top:14px;color:#52744e;font-size:12px;font-weight:800}.success.show{display:block}
+    .modal{position:fixed;z-index:20;inset:0;display:none;place-items:center;padding:20px;background:rgba(49,32,64,.48);backdrop-filter:blur(8px)}.modal.open{display:grid}.dialog{width:min(470px,100%);padding:34px;background:linear-gradient(145deg,#fffaff,#f0e4f3);position:relative;overflow:hidden;box-shadow:0 25px 70px rgba(55,30,73,.3)}.dialog:before{content:"✦";position:absolute;right:18px;bottom:-28px;color:#d3afd7;font:100px "Playfair Display";opacity:.38}.close{position:absolute;z-index:1;right:15px;top:11px;background:none;font-size:23px}.dialog h2{margin:8px 0;font:600 32px "Playfair Display",serif}.dialog p{margin:0 0 20px;color:#6e6079;font-size:12px}.ritual-note{position:relative;display:flex;gap:9px;align-items:center;margin:0 0 20px;padding:10px 12px;border:1px dashed #cbaad2;background:rgba(255,255,255,.55);font-size:11px;color:#745d80}.ritual-note b{color:#a06896}.form-row{position:relative;display:grid;gap:10px}.form-row input{width:100%;padding:13px 14px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px}.form-row .button{margin-top:4px}.success{display:none;margin-top:14px;color:#52744e;font-size:12px;font-weight:800}.success.show{display:block}.button[data-tip],.tiny-link[data-tip]{position:relative}.button[data-tip]:after,.tiny-link[data-tip]:after{content:attr(data-tip);position:absolute;z-index:8;left:50%;bottom:calc(100% + 11px);width:max-content;max-width:190px;padding:7px 10px;border-radius:2px;background:#493659;color:#fff;font-size:10px;font-weight:600;letter-spacing:0;text-decoration:none;opacity:0;pointer-events:none;transform:translate(-50%,5px);transition:.25s}.button[data-tip]:before,.tiny-link[data-tip]:before{content:"";position:absolute;z-index:8;left:50%;bottom:calc(100% + 5px);border:5px solid transparent;border-top-color:#493659;opacity:0;transform:translateX(-50%);transition:.25s}.button[data-tip]:hover:after,.button[data-tip]:hover:before,.tiny-link[data-tip]:hover:after,.tiny-link[data-tip]:hover:before{opacity:1;transform:translate(-50%,0)}
+    .modal{position:fixed;z-index:20;inset:0;display:none;place-items:center;padding:20px;background:rgba(49,32,64,.48);backdrop-filter:blur(8px)}.modal.open{display:grid}.dialog{width:min(520px,100%);padding:34px;background:linear-gradient(145deg,#fffaff,#f0e4f3);position:relative;overflow:hidden;box-shadow:0 25px 70px rgba(55,30,73,.3)}.dialog:before{content:"✦";position:absolute;right:18px;bottom:-28px;color:#d3afd7;font:100px "Playfair Display";opacity:.38}.close{position:absolute;z-index:1;right:15px;top:11px;background:none;font-size:23px}.dialog h2{margin:8px 0;font:600 32px "Playfair Display",serif}.dialog p{margin:0 0 16px;color:#6e6079;font-size:12px}.ritual-note{position:relative;display:flex;gap:9px;align-items:center;margin:0 0 14px;padding:10px 12px;border:1px dashed #cbaad2;background:rgba(255,255,255,.55);font-size:11px;color:#745d80}.ritual-note b{color:#a06896}.choice-title{margin:0 0 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#796588}.choice-row{display:flex;gap:7px;margin-bottom:15px}.choice{flex:1;padding:9px 8px;background:rgba(255,255,255,.64);color:#6b5378;border:1px solid rgba(155,112,165,.19);border-radius:48% 52% 45% 55% / 60% 55% 45% 40%;font-size:10px;font-weight:800;transition:.2s}.choice.active,.choice:hover{background:#755881;color:white;transform:translateY(-2px)}.popup-details{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:0 0 16px}.popup-detail{padding:10px 8px;background:rgba(255,255,255,.52);font-size:9px;line-height:1.35;color:#725e7e}.popup-detail b{display:block;margin-bottom:3px;color:#503c60;font-size:10px}.popup-detail span{font-size:16px;line-height:1}.form-row{position:relative;display:grid;gap:10px}.form-row input{width:100%;padding:13px 14px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13px}.form-row .button{margin-top:4px}.success{display:none;margin-top:14px;color:#52744e;font-size:12px;font-weight:800}.success.show{display:block}.button[data-tip],.tiny-link[data-tip]{position:relative}.button[data-tip]:after,.tiny-link[data-tip]:after{content:attr(data-tip);position:absolute;z-index:8;left:50%;bottom:calc(100% + 11px);width:max-content;max-width:190px;padding:7px 10px;border-radius:2px;background:#493659;color:#fff;font-size:10px;font-weight:600;letter-spacing:0;text-decoration:none;opacity:0;pointer-events:none;transform:translate(-50%,5px);transition:.25s}.button[data-tip]:before,.tiny-link[data-tip]:before{content:"";position:absolute;z-index:8;left:50%;bottom:calc(100% + 5px);border:5px solid transparent;border-top-color:#493659;opacity:0;transform:translateX(-50%);transition:.25s}.button[data-tip]:hover:after,.button[data-tip]:hover:before,.tiny-link[data-tip]:hover:after,.tiny-link[data-tip]:hover:before{opacity:1;transform:translate(-50%,0)}
+    .hero:after{content:"";position:absolute;left:48%;bottom:-20%;width:32vw;height:32vw;border-radius:50%;background:rgba(197,167,218,.26);filter:blur(4px);animation:drift-orb 9s ease-in-out infinite alternate}.hero-copy>*{animation:rise-in .8s both}.hero-copy .eyebrow{animation-delay:.08s}.hero-copy h1{animation-delay:.18s}.hero-copy p{animation-delay:.3s}.hero-copy .hero-actions{animation-delay:.42s}.hero-copy .hero-note{animation-delay:.54s}.box-art{animation:float-box 5s ease-in-out infinite}.bottle{animation:soft-glow 3s ease-in-out infinite alternate}.b2{animation-delay:.5s}.b3{animation-delay:1s}.tag{animation:pulse-tag 2.7s ease-in-out infinite}.small-box{animation:float-card 4.5s ease-in-out infinite}.peach .small-box{animation-delay:.7s}.sand .small-box{animation-delay:1.3s}.product,.ingredient,.step,.review{transition:transform .35s ease,box-shadow .35s ease}.product:hover{transform:translateY(-9px);box-shadow:0 20px 38px rgba(74,53,93,.13)}.ingredient:hover,.step:hover{transform:translateY(-6px);box-shadow:0 14px 28px rgba(74,53,93,.1)}.review:hover{transform:translateY(-5px);box-shadow:0 18px 32px rgba(74,53,93,.11)}.motion-ready [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.75,.25,1)}.motion-ready [data-reveal].visible{opacity:1;transform:none}.motion-ready [data-reveal].visible .product,.motion-ready [data-reveal].visible .ingredient,.motion-ready [data-reveal].visible .step{animation:rise-in .6s both}.motion-ready [data-reveal].visible .product:nth-child(2),.motion-ready [data-reveal].visible .ingredient:nth-child(2),.motion-ready [data-reveal].visible .step:nth-child(2){animation-delay:.12s}.motion-ready [data-reveal].visible .product:nth-child(3),.motion-ready [data-reveal].visible .ingredient:nth-child(3),.motion-ready [data-reveal].visible .step:nth-child(3){animation-delay:.24s}.motion-ready [data-reveal].visible .ingredient:nth-child(4){animation-delay:.36s}@keyframes rise-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}@keyframes float-box{0%,100%{margin-top:0}50%{margin-top:-12px}}@keyframes float-card{0%,100%{margin-top:0}50%{margin-top:-8px}}@keyframes soft-glow{from{filter:brightness(1)}to{filter:brightness(1.08)}}@keyframes pulse-tag{0%,100%{box-shadow:0 0 0 0 rgba(189,122,164,.25)}50%{box-shadow:0 0 0 13px rgba(189,122,164,0)}}@keyframes drift-orb{from{transform:translate3d(-25px,0,0) scale(.9)}to{transform:translate3d(28px,-35px,0) scale(1.12)}}
+    button.tiny-link{appearance:none;-webkit-appearance:none;display:inline-flex!important;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:10px 19px!important;border:0!important;border-radius:999px!important;background:linear-gradient(120deg,#4d3961,#765783)!important;color:#fff!important;font-size:10px!important;font-weight:800;line-height:1;box-shadow:0 9px 18px rgba(70,45,87,.19),inset 0 1px rgba(255,255,255,.25)!important}button.tiny-link:hover{transform:translateY(-3px) scale(1.025)!important;box-shadow:0 14px 24px rgba(70,45,87,.26),inset 0 1px rgba(255,255,255,.4)!important}.button[data-tip]:after,.tiny-link[data-tip]:after{padding:9px 14px;border:0;border-radius:999px;background:linear-gradient(120deg,#5c466d,#907195);box-shadow:0 9px 22px rgba(69,45,87,.18);font-size:10px}.button[data-tip]:before,.tiny-link[data-tip]:before{content:"✦";bottom:calc(100% + 2px);border:0;color:#755881;background:transparent;font-size:13px}
+    @keyframes surprise-breathe{0%,100%{box-shadow:0 20px 38px rgba(75,48,93,.16)}50%{box-shadow:0 26px 48px rgba(75,48,93,.28)}}@keyframes surprise-box-float{0%,100%{margin-top:0;transform:translate(-50%,-50%) rotate(-10deg)}50%{margin-top:-13px;transform:translate(-50%,-50%) rotate(-5deg)}}
+    @media(max-width:760px){.wrap{width:min(100% - 30px,580px)}header{padding-top:16px}.links,.nav-cta{display:none}.menu{display:block}.brand-logo{width:43px;height:43px}.hero{padding-top:115px;min-height:770px}.hero-grid{display:block}.hero h1{font-size:49px;max-width:440px}.hero-visual{height:315px;margin-top:10px}.box-art{transform:translate3d(var(--box-x,0),var(--box-y,0),0) scale(.74) rotate(-6deg);transform-origin:right bottom;right:-35px;bottom:-35px}.benefits .wrap{overflow:auto;justify-content:flex-start}.benefit{min-width:max-content}.section{padding:70px 0}.heading{align-items:start;display:block;margin-bottom:28px}.heading p{margin-top:13px}.grid-products{grid-template-columns:1fr;gap:13px}.product-img{height:230px}.product-copy{padding:17px}.surprise-box{grid-template-columns:1fr;border-radius:33px 28px 33px 28px}.surprise-art{min-height:180px}.surprise-copy{padding:29px 25px}.about-grid{grid-template-columns:1fr;gap:35px}.about-visual{height:340px}.ingredient-grid{grid-template-columns:1fr 1fr;gap:8px}.ingredient{min-height:164px;padding:18px 14px}.ingredient-icon{margin-bottom:17px}.steps{grid-template-columns:1fr;gap:8px}.step{min-height:0}.cta{padding:69px 0}.footer-grid{display:grid;justify-content:start}.facts{margin:25px 0}.hero-actions{flex-wrap:wrap}.tag{right:10px}.about-visual:after{font-size:57px}.review{flex-basis:100%;min-height:0}.review blockquote{margin:14px 0 20px}.footer-copy{order:3}.button[data-tip]:after,.button[data-tip]:before,.tiny-link[data-tip]:after,.tiny-link[data-tip]:before{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero:after,.hero-copy>*,.box-art,.bottle,.herb,.tag,.small-box,.product,.ingredient,.step,.review,.review-track,.surprise-box,.surprise-product-mark{animation:none!important;transition:none!important;will-change:auto}.motion-ready [data-reveal]{opacity:1;transform:none}}
   </style>
 </head>
 <body>
-  <section class="app" aria-label="TG Coin">
-    <div class="balance-block">
-      <div class="account-label">Ваш счёт</div>
-      <div class="balance-row">
-        <div class="balance" id="balance">0</div>
-        <span class="coin-badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg>
-        </span>
-      </div>
-      <div class="meta-row">
-        <span id="perSecond">+0/сек</span>
-        <span>·</span>
-        <span>Энергия <b id="energyText">100/100</b></span>
-        <div class="energy-track"><div class="energy-fill" id="energyFill"></div></div>
-      </div>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#" aria-label="Beauty Box Crimea"><img class="brand-logo" src="assets/beauty-box-crimea-logo.svg" alt=""><span>Beauty Box<br>Crimea</span></a>
+      <nav class="links" aria-label="Основная навигация"><a href="#boxes">Боксы</a><a href="#about">О нас</a><a href="#ingredients">Составы</a><a href="#reviews">Отзывы</a></nav>
+      <button class="nav-cta" data-order>Выбрать бокс</button><button class="menu" aria-label="Открыть меню" data-menu>☰</button>
     </div>
-
-    <div class="actions">
-      <button class="action top" type="button" data-sheet="rating" aria-label="Топ">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
-        Топ
-      </button>
-      <button class="action transfer" type="button" data-sheet="transfer" aria-label="Перевести">
-        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="14" y1="15" x2="18" y2="15"/></svg>
-        Перевести
-      </button>
-      <button class="action shop" type="button" data-sheet="shop" aria-label="Ускорения">
-        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        Ускорения
-      </button>
-    </div>
-
-    <div class="home">
-      <div class="section-title">Автоматически</div>
-      <div class="auto-list" id="autoList"></div>
-      <div class="coin-zone">
-        <div class="coin-wrap" id="coinWrap">
-          <button class="coin" id="coin" aria-label="Нажмите для получения монет">
-            <span class="online" id="onlineBadge">
-              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              онлайн <span id="onlineCount">1</span>
-            </span>
-            <span class="pay-logo">
-              <span class="pay-mark">
-                <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z"/></svg>
-              </span>
-              <span class="pay-text">pay</span>
-            </span>
-          </button>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">с любовью из Крыма</div>
+          <h1>Твоя пауза<br>для <em>красоты</em></h1>
+          <p>Собрали лучшее из крымской природы в боксы, которые превращают привычный уход в маленький личный ритуал.</p>
+          <div class="hero-actions"><a class="button dark" href="#boxes">Смотреть боксы <span>↘</span></a><a class="button pale" href="#about">Наша история</a></div>
+          <div class="hero-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M5 8c0 3.9 3.1 7 7 7s7-3.1 7-7M5 8c0-2.2 1.7-4 3.8-4.2M19 8c0-2.2-1.7-4-3.8-4.2"/></svg>Натуральные формулы · честный состав</div>
+        </div>
+        <div class="hero-visual" aria-label="Иллюстрация beauty box">
+          <div class="herb h1">✦</div><div class="herb h2">❋</div>
+          <div class="box-art"><div class="box-base"></div><div class="box-lid"></div><div class="bottle b1"></div><div class="bottle b2"></div><div class="bottle b3"></div><div class="tag">для тебя<br>и твоей<br>кожи</div></div>
         </div>
       </div>
-    </div>
-
-    <div class="overlay" id="overlay-shop" data-sheet-panel="shop">
-      <div class="sheet">
-        <div class="sheet-head">
-          <h2>Ускорения</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
+    </section>
+    <div class="benefits"><div class="wrap"><div class="benefit"><b>01</b> Сезонные подборки</div><div class="benefit"><b>02</b> Этичные бренды Крыма</div><div class="benefit"><b>03</b> Доставка по России</div></div></div>
+    <section class="section products" id="boxes">
+      <div class="wrap"><div class="heading"><div><div class="eyebrow">наши боксы</div><h2>Выбери настроение<br>для ухода</h2></div><p>В каждом боксе — уход, который хочется растянуть на целый вечер: полноразмерные средства, открытка и маленький подарок.</p></div>
+        <div class="grid-products">
+          <article class="product"><div class="product-img"><div class="small-box"></div></div><div class="product-copy"><div class="product-top"><h3>Лавандовый мини</h3><span class="price">1 500 ₽</span></div><p>Небольшой знак заботы: познакомиться с крымским уходом или подарить подруге.</p><ul class="product-details"><li>3 средства</li><li>открытка</li><li>лента</li></ul><button class="tiny-link" data-order data-box="Лавандовый мини — 1 500 ₽">Выбрать бокс <span>↗</span></button></div></article>
+          <article class="product"><div class="product-img peach"><div class="small-box"></div></div><div class="product-copy"><div class="product-top"><h3>Лавандовый сад</h3><span class="price">3 500 ₽</span></div><p>Главный бокс для неспешного вечера с цветочными ароматами и мягкими текстурами.</p><ul class="product-details"><li>5 средств</li><li>свеча</li><li>подарочная коробка</li></ul><button class="tiny-link" data-order data-box="Лавандовый сад — 3 500 ₽">Выбрать бокс <span>↗</span></button></div></article>
+          <article class="product"><div class="product-img sand"><div class="small-box"></div></div><div class="product-copy"><div class="product-top"><h3>Лавандовое море</h3><span class="price">5 000 ₽</span></div><p>Большое путешествие в Крым: полный ритуал, редкие средства и впечатление на весь день.</p><ul class="product-details"><li>8 средств</li><li>аромасаше</li><li>подарок внутри</li></ul><button class="tiny-link" data-order data-box="Лавандовое море — 5 000 ₽">Выбрать бокс <span>↗</span></button></div></article>
         </div>
-        <div class="sheet-body" id="upgrades"></div>
+        <article class="surprise-box">
+          <div class="surprise-art" aria-label="Beauty Box Crimea Лавандовый сюрприз"><div class="surprise-product-mark">BEAUTY BOX<small>CRIMEA</small></div></div>
+          <div class="surprise-copy"><div class="eyebrow">непредсказуемая красота</div><h3>Лавандовый<br>сюрприз</h3><p>Это настоящий beauty box — только его наполнение останется тайной до момента открытия. Внутри может оказаться всё, что угодно: редкое средство, аромат для дома, любимый хит или маленький предмет для вашего личного ритуала.</p><ul><li>неожиданное наполнение</li><li>для себя или в подарок</li><li>собираем вручную</li></ul><div class="surprise-price"><span>стоимость бокса</span><b>2 000 ₽</b></div><button class="tiny-link" data-order data-box="Лавандовый сюрприз — 2 000 ₽">Открыть сюрприз <span>↗</span></button></div>
+        </article>
       </div>
-    </div>
-
-    <div class="overlay" id="overlay-transfer" data-sheet-panel="transfer">
-      <div class="sheet">
-        <div class="sheet-head">
-          <h2>Перевести</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
-        </div>
-        <div class="sheet-body">
-          <p class="panel-note">Переводите TG Coin по уникальному ID игрока.</p>
-          <div class="profile-card">
-            <div class="profile-name" id="profileName">Игрок</div>
-            <div class="profile-id" id="profileId">ID: —</div>
-          </div>
-          <form class="transfer-form" id="transferForm">
-            <label>ID получателя<input id="recipientId" required placeholder="TG-12345678"></label>
-            <label>Сумма<input id="transferAmount" required min="1" step="1" type="number" placeholder="0"></label>
-            <button class="primary" type="submit">Отправить</button>
-            <div class="transfer-message" id="transferMessage"></div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div class="overlay" id="overlay-rating" data-sheet-panel="rating">
-      <div class="sheet">
-        <div class="sheet-head">
-          <h2>Топ</h2>
-          <button class="sheet-close" type="button" data-close aria-label="Закрыть">×</button>
-        </div>
-        <div class="sheet-body" id="ratingList"></div>
-      </div>
-    </div>
-
-    <div class="modal" id="registration" hidden>
-      <form class="modal-card" id="registrationForm">
-        <h1>
-          <span class="coin-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg>
-          </span>
-          TG Coin
-        </h1>
-        <p>Выберите имя. ID для переводов будет выдан автоматически.</p>
-        <div class="modal-id" id="newProfileId"></div>
-        <label>Ваше имя
-          <input id="registrationName" required maxlength="20" placeholder="Например, Алексей" autocomplete="nickname">
-        </label>
-        <button class="primary" type="submit" style="width:100%;margin-top:16px">Начать играть</button>
-      </form>
-    </div>
-  </section>
-
+    </section>
+    <section class="section" id="about"><div class="wrap about-grid"><div class="about-visual"><div class="sun"></div><div class="sea"></div></div><div class="about-copy"><div class="eyebrow">наша история</div><h2>Красота, в которой слышно море</h2><p>Мы живём рядом с крымскими садами, солёным ветром и ароматными травами. Поэтому знаем: лучший уход начинается с бережного отношения к себе и к месту, где всё растёт.</p><p>Beauty Box Crimea — это знакомство с локальными марками и их честными, работающими формулами.</p><div class="facts"><div class="fact"><b>12</b><span>крымских брендов</span></div><div class="fact"><b>0%</b><span>случайных средств</span></div><div class="fact"><b>100%</b><span>любви к деталям</span></div><div class="fact"><b>48 ч</b><span>на сборку заказа</span></div></div><button class="tiny-link" data-order>Собрать свой бокс</button></div></div></section>
+    <section class="section ingredients" id="ingredients"><div class="wrap"><div class="heading"><div><div class="eyebrow">о косметике</div><h2>Сила крымской<br>природы — внутри</h2></div><p>Отбираем средства с понятными формулами, мягкими текстурами и ингредиентами, которые хочется ощущать на коже.</p></div><div class="ingredient-grid"><article class="ingredient"><span class="ingredient-icon">◒</span><h3>Роза</h3><p>Тонизирует, возвращает коже свежесть и мягкое сияние.</p></article><article class="ingredient"><span class="ingredient-icon">⌇</span><h3>Морская соль</h3><p>Деликатно очищает и насыщает кожу ценными минералами.</p></article><article class="ingredient"><span class="ingredient-icon">✣</span><h3>Лаванда</h3><p>Помогает замедлиться, успокоить кожу и мысли.</p></article><article class="ingredient"><span class="ingredient-icon">❧</span><h3>Виноград</h3><p>Антиоксидантная поддержка для гладкости и тонуса.</p></article></div></div></section>
+    <section class="section how"><div class="wrap"><div class="heading"><div><div class="eyebrow">как это работает</div><h2>Лёгкий путь к своему<br>beauty-ритуалу</h2></div><p>Никаких случайных баночек: подскажем, какой бокс подойдёт вам или станет красивым подарком.</p></div><div class="steps"><article class="step"><span class="step-number">01</span><h3>Выбираете бокс</h3><p>Ориентируйтесь на настроение, наполнение или бюджет — три формата уже готовы к отправке.</p></article><article class="step"><span class="step-number">02</span><h3>Мы собираем с заботой</h3><p>Аккуратно упаковываем средства, добавляем открытку и проверяем каждую деталь вручную.</p></article><article class="step"><span class="step-number">03</span><h3>Открываете Крым</h3><p>Дома вас ждёт готовый сценарий ухода: от аромата первой свечи до последней капли крема.</p></article></div></div></section>
+    <section class="section reviews" id="reviews"><div class="wrap"><div class="heading"><div><div class="eyebrow">отзывы</div><h2>Ваши тёплые слова</h2></div><p>Больше 500 девушек уже устроили себе маленькое путешествие в Крым вместе с нашими боксами.</p></div><div class="review-viewport"><div class="review-track" id="review-track"><article class="review"><span class="quote-mark">“</span><div class="stars">★★★★★</div><blockquote>«Открывала бокс как подарок на Новый год — столько красивых деталей! А крем с розой теперь со мной каждый день.»</blockquote><footer><b>Марина, Москва</b><span>«Лавандовый сад»</span></footer></article><article class="review"><span class="quote-mark">“</span><div class="stars">★★★★★</div><blockquote>«Наконец-то нашла уход с настоящим ароматом моря, а не отдушкой. Всё очень бережное и действительно работает.»</blockquote><footer><b>Алина, Казань</b><span>«Лавандовое море»</span></footer></article><article class="review"><span class="quote-mark">“</span><div class="stars">★★★★★</div><blockquote>«Идеальный формат, чтобы познакомиться с местными брендами. Уже заказала второй бокс для сестры.»</blockquote><footer><b>София, Санкт-Петербург</b><span>«Лавандовый мини»</span></footer></article><article class="review"><span class="quote-mark">“</span><div class="stars">★★★★★</div><blockquote>«Бокс приехал как маленький праздник: нежная упаковка, открытка и мой любимый аромат лаванды во всём доме.»</blockquote><footer><b>Екатерина, Краснодар</b><span>«Лавандовый сад»</span></footer></article><article class="review"><span class="quote-mark">“</span><div class="stars">★★★★★</div><blockquote>«Подарила маме — она сразу попросила ссылку. Это тот редкий случай, когда красиво и действительно полезно.»</blockquote><footer><b>Виктория, Ростов-на-Дону</b><span>«Лавандовое море»</span></footer></article></div></div><div class="review-controls"><div class="dots" aria-label="Страницы отзывов"><button class="dot active" aria-label="Отзыв 1"></button><button class="dot" aria-label="Отзыв 2"></button><button class="dot" aria-label="Отзыв 3"></button></div><div class="arrows"><button class="arrow" id="review-prev" aria-label="Предыдущие отзывы">←</button><button class="arrow" id="review-next" aria-label="Следующие отзывы">→</button></div></div></div></section>
+    <section class="cta"><div class="wrap"><div class="eyebrow">ваш ритуал ждёт</div><h2>Подарите себе немного Крыма</h2><p>Выберите готовый бокс или расскажите нам о своём настроении — подберём особенный.</p><button class="button" data-order>Выбрать beauty box ↗</button></div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-grid"><a class="brand footer-brand" href="#"><img class="brand-logo" src="assets/beauty-box-crimea-logo.svg" alt=""><span>Beauty Box<br>Crimea</span></a><span class="footer-copy">© 2024 Beauty Box Crimea · с любовью к Крыму</span><div class="socials"><a href="#">Telegram</a><a href="#">Instagram*</a></div></div></footer>
+  <div class="modal" id="order-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="dialog"><button class="close" aria-label="Закрыть" data-close>×</button><div class="eyebrow">ваш заказ</div><h2 id="modal-title">Красота уже в пути</h2><p>Оставьте контакты — расскажем о наличии и поможем выбрать бокс.</p><div class="ritual-note">✦ <span><b>Лавандовая подсказка:</b> отметьте бокс в форме — мы добавим рекомендацию по вашему ритуалу ухода.</span></div><p class="choice-title">Для кого собираем настроение?</p><div class="choice-row"><button class="choice active" type="button" data-choice="Для себя">Для себя</button><button class="choice" type="button" data-choice="В подарок">В подарок</button><button class="choice" type="button" data-choice="Сюрприз">Сюрприз</button></div><div class="popup-details"><div class="popup-detail"><span>✦</span><b>Собираем вручную</b>каждую коробку</div><div class="popup-detail"><span>◌</span><b>48 часов</b>на бережную сборку</div><div class="popup-detail"><span>❋</span><b>Открытка</b>с вашим посланием</div></div><form id="order-form" class="form-row"><input id="selected-box" aria-label="Выбранный бокс" placeholder="Какой бокс вас заинтересовал?"><input required aria-label="Ваше имя" placeholder="Ваше имя"><input required type="tel" aria-label="Телефон" placeholder="+7 (___) ___-__-__"><button class="button dark" data-tip="Ваш запрос уже почти у нас" type="submit">Отправить заявку</button></form><div class="success" id="success">Спасибо! Мы скоро свяжемся с вами.</div></div></div>
   <script>
-    (() => {
-      "use strict";
-      const KEY = "tgCoinGameState";
-      const ONLINE_KEY = "tgCoinOnlineSessions";
-      const SESSION_TTL = 60000;
-      const HEARTBEAT_MS = 10000;
-      const sessionId = crypto.randomUUID?.() || `s-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      const badge = '<span class="coin-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.5 4.3c.3-.9-.6-1.6-1.4-1.2L2.7 10.3c-.9.4-.8 1.7.1 2l4.6 1.5 1.8 5.7c.3.9 1.5 1.1 2.1.3l2.7-3.4 4.9 3.6c.7.5 1.7.1 1.9-.7L21.5 4.3z" fill="currentColor"/></svg></span>';
-      const icons = {
-        cursor: '<svg viewBox="0 0 24 24"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/><path d="M13 13l6 6"/></svg>',
-        gpu: '<svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h2M14 10h2M8 14h8"/><path d="M2 10v4M22 10v4M10 2v2M14 2v2M10 20v2M14 20v2"/></svg>',
-        rack: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="10" width="18" height="5" rx="1"/><rect x="3" y="16" width="18" height="5" rx="1"/><circle cx="7" cy="6.5" r="1" fill="currentColor"/><circle cx="7" cy="12.5" r="1" fill="currentColor"/><circle cx="7" cy="18.5" r="1" fill="currentColor"/></svg>',
-        server: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="6" rx="1"/><rect x="4" y="11" width="16" height="6" rx="1"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="14" r="1" fill="currentColor"/><path d="M12 19v2M8 21h8"/></svg>'
+    const modal=document.querySelector('#order-modal'),selected=document.querySelector('#selected-box');
+    const orderTips=['Откроем карту вашего ритуала ✦','Внутри — кусочек лавандового Крыма','Выберите настроение, остальное сделаем мы'];
+    document.querySelectorAll('[data-order]').forEach((button,index)=>button.dataset.tip=orderTips[index%orderTips.length]);
+    document.querySelectorAll('[data-order]').forEach(button=>button.addEventListener('click',()=>{selected.value=button.dataset.box||'';modal.classList.add('open');document.body.style.overflow='hidden'}));
+    const close=()=>{modal.classList.remove('open');document.body.style.overflow=''};
+    document.querySelectorAll('[data-choice]').forEach(choice=>choice.addEventListener('click',()=>{document.querySelectorAll('[data-choice]').forEach(item=>item.classList.remove('active'));choice.classList.add('active');document.querySelector('.ritual-note span').innerHTML=`<b>${choice.dataset.choice}:</b> ${choice.dataset.choice==='В подарок'?'добавим карточку с вашим посланием.':'подберём настроение для особенного ритуала.'}`}));
+    document.querySelector('[data-close]').addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close()});
+    document.querySelector('#order-form').addEventListener('submit',e=>{e.preventDefault();document.querySelector('#success').classList.add('show');e.target.reset()});
+    document.querySelector('[data-menu]').addEventListener('click',()=>document.querySelector('#boxes').scrollIntoView({behavior:'smooth'}));
+    const track=document.querySelector('#review-track'),cards=[...track.children],dots=document.querySelector('.dots');
+    let reviewIndex=0;
+    function renderReviews(){
+      const visible=window.innerWidth<=760?1:3, max=Math.max(0,cards.length-visible);
+      reviewIndex=Math.min(reviewIndex,max);
+      const cardWidth=cards[0].getBoundingClientRect().width;
+      const gap=parseFloat(getComputedStyle(track).gap)||0;
+      track.style.transform=`translateX(-${reviewIndex*(cardWidth+gap)}px)`;
+      dots.innerHTML=Array.from({length:max+1},(_,i)=>`<button class="dot ${i===reviewIndex?'active':''}" aria-label="Отзывы, страница ${i+1}"></button>`).join('');
+      [...dots.children].forEach((dot,i)=>dot.addEventListener('click',()=>{reviewIndex=i;renderReviews()}));
+    }
+    document.querySelector('#review-prev').addEventListener('click',()=>{reviewIndex--;if(reviewIndex<0)reviewIndex=Math.max(0,cards.length-(window.innerWidth<=760?1:3));renderReviews()});
+    document.querySelector('#review-next').addEventListener('click',()=>{reviewIndex++;const max=Math.max(0,cards.length-(window.innerWidth<=760?1:3));if(reviewIndex>max)reviewIndex=0;renderReviews()});
+    window.addEventListener('resize',renderReviews);renderReviews();
+    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.body.classList.add('motion-ready');
+      const revealTargets=document.querySelectorAll('.products .heading,.grid-products,.surprise-box,.about-grid,.ingredients .heading,.ingredient-grid,.how .heading,.steps,.reviews .heading,.review-viewport,.review-controls,.cta .wrap');
+      revealTargets.forEach(target=>target.dataset.reveal='');
+      const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.14});
+      revealTargets.forEach(target=>revealObserver.observe(target));
+      const cycleReviews=()=>document.querySelector('#review-next').click();
+      let reviewTimer=setInterval(cycleReviews,5200);
+      document.querySelector('.reviews').addEventListener('mouseenter',()=>clearInterval(reviewTimer));
+      document.querySelector('.reviews').addEventListener('mouseleave',()=>{clearInterval(reviewTimer);reviewTimer=setInterval(cycleReviews,5200)});
+      let ticking=false;
+      const animateHero=()=>{
+        const progress=Math.min(1,Math.max(0,window.scrollY/(window.innerHeight*.9)));
+        const root=document.documentElement.style;
+        root.setProperty('--box-y',`${progress*54}px`);
+        root.setProperty('--box-x',`${progress*-18}px`);
+        root.setProperty('--b1-y',`${progress*-28}px`);
+        root.setProperty('--b2-y',`${progress*-46}px`);
+        root.setProperty('--b3-y',`${progress*-18}px`);
+        root.setProperty('--tag-y',`${progress*-24}px`);
+        root.setProperty('--sparkle-one-x',`${progress*35}px`);
+        root.setProperty('--sparkle-one-y',`${progress*27}px`);
+        root.setProperty('--sparkle-two-x',`${progress*-25}px`);
+        root.setProperty('--sparkle-two-y',`${progress*-18}px`);
+        ticking=false;
       };
-      const colors = ["c-orange", "c-green", "c-blue", "c-pink"];
-      const definitions = [
-        { id: "click", name: "Курсор", icon: "cursor", badge: level => level > 0 ? `x${level + 1}` : null, yield: level => `+${(0.001 * (1 + level)).toFixed(3)}/сек`, cost: level => Math.ceil(10 * 1.5 ** level) },
-        { id: "auto", name: "Видеокарта", icon: "gpu", badge: null, yield: level => `+${level}/сек`, cost: level => Math.ceil(50 * 1.5 ** level) },
-        { id: "tank", name: "Энергоблок", icon: "rack", badge: null, yield: level => `+${50 * level} макс.`, cost: level => 100 * (level + 1) },
-        { id: "recovery", name: "Сервер", icon: "server", badge: null, yield: level => `+${(1 + .5 * level).toFixed(1)}/сек`, cost: level => 75 * (level + 1) }
-      ];
-      const initial = () => ({
-        coins: 0, energy: 100,
-        upgrades: { click: 0, auto: 0, tank: 0, recovery: 0 },
-        autoCarry: 0, lastSeen: Date.now(), profile: null
-      });
-
-      let state;
-      try {
-        const saved = JSON.parse(localStorage.getItem(KEY));
-        state = saved?.upgrades ? { ...initial(), ...saved, upgrades: { ...initial().upgrades, ...saved.upgrades } } : initial();
-      } catch { state = initial(); }
-
-      const maxEnergy = () => 100 + 50 * state.upgrades.tank;
-      const recoveryRate = () => 1 + .5 * state.upgrades.recovery;
-      const clickIncome = () => 1 + state.upgrades.click;
-      const applyElapsed = ms => {
-        const sec = Math.max(0, ms / 1000);
-        state.energy = Math.min(maxEnergy(), state.energy + sec * recoveryRate());
-        const passive = state.autoCarry + sec * state.upgrades.auto;
-        const earned = Math.floor(passive);
-        state.coins += earned;
-        state.autoCarry = passive - earned;
-      };
-      applyElapsed(Date.now() - state.lastSeen);
-      let lastTick = Date.now();
-
-      const $ = s => document.querySelector(s);
-      const $$ = s => [...document.querySelectorAll(s)];
-      const balance = $("#balance"), perSecond = $("#perSecond"), energyText = $("#energyText");
-      const energyFill = $("#energyFill"), coin = $("#coin"), coinWrap = $("#coinWrap");
-      const upgrades = $("#upgrades"), autoList = $("#autoList");
-      const profileName = $("#profileName"), profileId = $("#profileId"), ratingList = $("#ratingList");
-      const onlineCount = $("#onlineCount");
-
-      const save = () => { state.lastSeen = Date.now(); localStorage.setItem(KEY, JSON.stringify(state)); };
-      const format = n => new Intl.NumberFormat("ru-RU").format(n);
-      const esc = v => String(v).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" })[c]);
-      const createId = () => `TG-${Math.floor(10000000 + Math.random() * 90000000)}`;
-      const formatOnline = n => n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(".0", "")}K` : String(n);
-      const renderItemIcon = (item, index, level) => {
-        const badge = item.badge?.(level);
-        return `<span class="item-icon ${colors[index]}">${icons[item.icon]}${badge ? `<span class="mini-badge">${badge}</span>` : ""}</span>`;
-      };
-      const firstNames = ["Crypto", "Blue", "Fast", "Gold", "Lucky", "Dark", "Neo", "Mega", "Pro", "Super", "Iron", "Fire", "Ice", "Moon", "Star"];
-      const lastNames = ["Fox", "Wolf", "Tiger", "Miner", "Clicker", "Coin", "Trader", "Boss", "King", "Hawk", "Bear", "Dragon", "Ninja", "Pilot", "Lord"];
-      const npcName = index => `${firstNames[index % firstNames.length]} ${lastNames[Math.floor(index / firstNames.length) % lastNames.length]}`;
-      const npcCoins = index => Math.max(120, Math.floor(98500 - index * 920 + ((index * 37) % 400)));
-      const ranking = () => {
-        const players = Array.from({ length: 99 }, (_, index) => ({
-          name: npcName(index),
-          coins: npcCoins(index)
-        }));
-        players.push({ name: state.profile?.name || "Вы", coins: state.coins, you: true });
-        return players.sort((a, b) => b.coins - a.coins).slice(0, 100);
-      };
-      const readSessions = () => {
-        try { return JSON.parse(localStorage.getItem(ONLINE_KEY) || "{}"); }
-        catch { return {}; }
-      };
-      const writeSessions = sessions => localStorage.setItem(ONLINE_KEY, JSON.stringify(sessions));
-      const pruneSessions = sessions => {
-        const now = Date.now();
-        Object.keys(sessions).forEach(id => {
-          if (now - sessions[id] > SESSION_TTL) delete sessions[id];
-        });
-        return sessions;
-      };
-      const updateOnline = () => {
-        const sessions = pruneSessions(readSessions());
-        sessions[sessionId] = Date.now();
-        writeSessions(sessions);
-        onlineCount.textContent = formatOnline(Object.keys(sessions).length);
-        return Object.keys(sessions).length;
-      };
-
-      const openSheet = name => $$(".overlay").forEach(o => o.classList.toggle("open", o.dataset.sheetPanel === name));
-      const closeSheets = () => $$(".overlay").forEach(o => o.classList.remove("open"));
-
-      function render() {
-        balance.textContent = format(state.coins);
-        perSecond.textContent = `+${state.upgrades.auto}/сек`;
-        energyText.textContent = `${Math.floor(state.energy)}/${maxEnergy()}`;
-        energyFill.style.width = `${Math.max(0, state.energy / maxEnergy() * 100)}%`;
-        if (state.profile) {
-          profileName.textContent = state.profile.name;
-          profileId.textContent = `ID: ${state.profile.id}`;
-        }
-
-        ratingList.innerHTML = ranking().map((p, i) => `
-          <div class="rating-row${p.you ? " you" : ""}">
-            <div class="rank">#${i + 1}</div>
-            <b>${esc(p.name)}${p.you ? " · вы" : ""}</b>
-            <span>${format(p.coins)}</span>
-          </div>`).join("");
-
-        const purchased = definitions
-          .map((item, index) => ({ item, index, level: state.upgrades[item.id] }))
-          .filter(entry => entry.level > 0);
-        autoList.innerHTML = purchased.length
-          ? purchased.map(({ item, index, level }) => `<article class="mini-card">
-              ${renderItemIcon(item, index, level)}
-              <div><b>${item.name}</b><span>${item.yield(level)}</span></div>
-            </article>`).join("")
-          : '<p class="auto-empty">Купите ускорения, чтобы они появились здесь</p>';
-
-        upgrades.innerHTML = definitions.map((item, i) => {
-          const lvl = state.upgrades[item.id];
-          const cost = item.cost(lvl);
-          return `<article class="upgrade">
-            ${renderItemIcon(item, i, lvl)}
-            <div class="upgrade-info">
-              <div class="upgrade-title"><h3>${item.name}</h3><span class="yield">${item.yield(lvl)}</span></div>
-              <button class="buy" data-upgrade="${item.id}" ${state.coins >= cost ? "" : "disabled"}>
-                Купить за ${format(cost)} ${badge}
-              </button>
-            </div>
-          </article>`;
-        }).join("");
-      }
-
-      function showFloat(amount, e) {
-        const r = coinWrap.getBoundingClientRect();
-        const el = document.createElement("span");
-        el.className = "float";
-        el.textContent = `+${amount}`;
-        el.style.left = `${(e?.clientX ?? r.left + r.width / 2) - r.left}px`;
-        el.style.top = `${(e?.clientY ?? r.top + r.height / 2) - r.top}px`;
-        coinWrap.append(el);
-        el.addEventListener("animationend", () => el.remove());
-      }
-
-      coin.addEventListener("click", e => {
-        if (state.energy < 1) {
-          coin.classList.remove("empty"); void coin.offsetWidth; coin.classList.add("empty");
-          return;
-        }
-        const income = clickIncome();
-        state.energy -= 1;
-        state.coins += income;
-        coin.classList.add("pressed");
-        setTimeout(() => coin.classList.remove("pressed"), 100);
-        if (navigator.vibrate) navigator.vibrate(10);
-        showFloat(income, e);
-        save(); render();
-      });
-
-      upgrades.addEventListener("click", e => {
-        const btn = e.target.closest(".buy:not(:disabled)");
-        if (!btn) return;
-        const item = definitions.find(d => d.id === btn.dataset.upgrade);
-        const cost = item.cost(state.upgrades[item.id]);
-        if (state.coins < cost) return;
-        state.coins -= cost;
-        state.upgrades[item.id]++;
-        state.energy = Math.min(state.energy, maxEnergy());
-        save(); render();
-        const bought = upgrades.querySelector(`[data-upgrade="${item.id}"]`);
-        bought.textContent = "Куплено!";
-        bought.classList.add("success");
-        setTimeout(() => { bought.classList.remove("success"); render(); }, 200);
-      });
-
-      $$("[data-sheet]").forEach(b => b.addEventListener("click", () => openSheet(b.dataset.sheet)));
-      $$("[data-close]").forEach(b => b.addEventListener("click", closeSheets));
-      $$(".overlay").forEach(o => o.addEventListener("click", e => { if (e.target === o) closeSheets(); }));
-
-      if (!state.profile) {
-        const id = createId();
-        $("#newProfileId").textContent = `Ваш ID: ${id}`;
-        $("#registration").hidden = false;
-        $("#registrationForm").addEventListener("submit", e => {
-          e.preventDefault();
-          state.profile = { id, name: $("#registrationName").value.trim() || "Игрок" };
-          $("#registration").hidden = true;
-          save(); render();
-        });
-      }
-
-      $("#transferForm").addEventListener("submit", e => {
-        e.preventDefault();
-        const recipient = $("#recipientId").value.trim().toUpperCase();
-        const amount = Number($("#transferAmount").value);
-        const msg = $("#transferMessage");
-        if (!/^TG-\d{8}$/.test(recipient)) { msg.textContent = "ID в формате TG-12345678"; return; }
-        if (!Number.isInteger(amount) || amount < 1) { msg.textContent = "Укажите целое число"; return; }
-        if (amount > state.coins) { msg.textContent = "Недостаточно монет"; return; }
-        state.coins -= amount;
-        save(); render();
-        msg.textContent = `Отправлено ${format(amount)} на ${recipient}`;
-        e.target.reset();
-      });
-
-      const tick = () => { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); };
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) { const now = Date.now(); applyElapsed(now - lastTick); lastTick = now; save(); render(); }
-      });
-      window.addEventListener("beforeunload", () => {
-        const sessions = pruneSessions(readSessions());
-        delete sessions[sessionId];
-        writeSessions(sessions);
-        save();
-      });
-      window.addEventListener("storage", event => {
-        if (event.key === ONLINE_KEY) updateOnline();
-      });
-      updateOnline();
-      setInterval(updateOnline, HEARTBEAT_MS);
-      render(); save(); setInterval(tick, 100);
-    })();
+      window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(animateHero);ticking=true}},{passive:true});
+      animateHero();
+    }
   </script>
 </body>
 </html>
